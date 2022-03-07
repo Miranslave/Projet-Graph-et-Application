@@ -4,6 +4,7 @@ public class Edge {
     private int sommetTerminal;
     private double[] valeurs;
 
+    //Constructeurs
     public Edge(int sommetTerminal, int nb_param_arc) {
         this.sommetTerminal = sommetTerminal;
         this.valeurs = new double[nb_param_arc];
@@ -14,6 +15,12 @@ public class Edge {
         this.valeurs = param;
     }
 
+    public String affichage() {
+        return sommetTerminal + Arrays.toString(valeurs);
+    }
+
+    //region Get / Set
+    // Get/Set
     public int getSommetTerminal() {
         return sommetTerminal;
     }
@@ -33,13 +40,13 @@ public class Edge {
     public void setValeurs(int index, int valeur) {
         this.valeurs[index] = valeur;
     }
-
+    //endregion
     @Override
+
+    //region toString
     public String toString() {
         return sommetTerminal + Arrays.toString(valeurs);
     }
+    //endregion
 
-    public String affichage() {
-        return sommetTerminal + Arrays.toString(valeurs);
-    }
 }

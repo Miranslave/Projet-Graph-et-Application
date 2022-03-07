@@ -13,6 +13,7 @@ public class Graphe {
     private ArrayList<LinkedList<Edge>> listeAdjacence;
     private int[] degree;
 
+    //Constructeur
     public Graphe() {
         this.oriente = true;
         this.nbSommet = 0;
@@ -23,47 +24,54 @@ public class Graphe {
         this.degree = new int[0];
     }
 
+    //Import d'un graphique à partir d'un fichier
     public static Graphe ImporterGraphe(String nomfichier) throws IOException {
         Graphe curt_graph = new Graphe();
 
-        File doc = new File("C:\\Users\\Farès Zaroui\\Desktop\\Graph et application\\" + nomfichier + ".tgoGraph");
+        //chemin Fares : C:\\Users\\Farès Zaroui\\Desktop\\Graph et application\\" + nomfichier + ".tgoGraph
+        //chemin Benj : E:\\Programmation\\Java\\Projet-Graph-et-Application\\graphs\\" + nomfichier + ".tgoGraph
+        File doc = new File("E:\\Programmation\\Java\\Projet-Graph-et-Application\\graphs\\" + nomfichier + ".tgoGraph");
         try (BufferedReader obj = new BufferedReader(new FileReader(doc))) {
             String strng;
             int compt = 1;
-            // Boucle de lecture du fichier
+            // Boucle de lecture du fichier, on le lit tant que la ligne n'est pas null (fin de fichier)
             while ((strng = obj.readLine()) != null) {
+                //Determination de l'orientation du graph
                 if (compt == 2) {
                     String[] tab_crt = strng.split(" ");
-                    System.out.println(tab_crt[1]);
                     if (tab_crt[1].equalsIgnoreCase("true")) {
-                        System.out.println("Vrai");
                         curt_graph.setOriente(true);
                     } else {
-                        System.out.println("Faux");
                         curt_graph.setOriente(false);
                     }
                 }
+                //Definition du nombre de sommet, du nombre d'arcs, du nombre de valeurs par arcs.
+                //On initialise pour chaque sommet son degré à 0
                 if (compt == 4) {
                     String[] param_int = strng.split(" ");
                     curt_graph.setNbSommet(Integer.parseInt(param_int[0]));
                     curt_graph.setNbArcs(Integer.parseInt(param_int[2]));
                     curt_graph.setNbValeursParArc(Integer.parseInt(param_int[3]));
                     curt_graph.setDegree(new int[curt_graph.getNbSommet()]);
+                    //Initialisation du degré i à 0
                     for (int i = 0; i < curt_graph.getNbSommet(); i++) {
                         curt_graph.degree[i] = 0;
                     }
                 }
 
+                //Boucle de lecteur de saisie de chaque sommet
                 if (5 <= compt && compt <= 5 + curt_graph.getNbSommet()) {
                     for (int i = 0; i < curt_graph.getNbSommet(); i++) {
                         strng = obj.readLine();
                         compt += 1;
                         String[] sommet_nom = strng.split(" ");
+                        //Ajout du sommet dans ListeSommets
                         curt_graph.getListeSommets().add(new Vertex(sommet_nom[1]));
                     }
                 }
-                if (6 + curt_graph.getNbSommet() <= compt
-                        && compt <= 6 + curt_graph.getNbSommet() + curt_graph.getNbArcs()) {
+
+                //Boucle de lecture des arcs
+                if (6 + curt_graph.getNbSommet() <= compt && compt <= 6 + curt_graph.getNbSommet() + curt_graph.getNbArcs()) {
 
                     for (int i = 0; i < curt_graph.getNbSommet(); i++) {
                         curt_graph.getListeAdjacence().add(new LinkedList<Edge>());
@@ -115,6 +123,7 @@ public class Graphe {
 
     }
 
+    //Methode de parcours en Largeur du graphique, à partir d'un sommet placé en paramètre
     public void parcoursLargeur(int indexsommetDepart) {
         int[] dist = new int[this.listeSommets.size()];
         Vertex[] pere = new Vertex[this.listeSommets.size()];
@@ -143,6 +152,7 @@ public class Graphe {
 
     }
 
+    //Affichage d'un graph et de ses params
     public void affichage() {
         System.out.println("Graphe [" + "\n oriente=" + oriente
                 + ", \n nbSommet=" + nbSommet +
@@ -155,13 +165,18 @@ public class Graphe {
         System.out.println("\n Liste d'adjacence");
         for (int i = 0; i < listeAdjacence.size(); i++) {
             System.out.print(i + " : ");
-            for (int j = 0; j < listeAdjacence.get(i).size(); j++) {
-                System.out.print(listeAdjacence.get(i).get(j).affichage() + " ");
+            if(listeAdjacence.get(i).size() ==0){
+                System.out.print("Vide");
+            }else {
+                for (int j = 0; j < listeAdjacence.get(i).size(); j++) {
+                    System.out.print(listeAdjacence.get(i).get(j).affichage() + " ");
+                }
             }
             System.out.print("\n");
         }
     }
 
+    //region Get / Set
     public boolean isOriente() {
         return oriente;
     }
@@ -205,10 +220,13 @@ public class Graphe {
     public void setDegree(int[] degree) {
         this.degree = degree;
     }
+    //endregion
 
     @Override
+    //region toString
+    //toString liste adjacence
     public String toString() {
         return "Graphe [listeAdjacence=" + listeAdjacence + "]";
     }
-
+    //endregion
 }
