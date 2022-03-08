@@ -1,0 +1,18 @@
+Name: Cours_Representation.tgoGraph
+Oriented: true
+Parameters [nbVertices nbValuesByVertex nbEdges nbValuesByEdge]:
+5 0 7 2
+Vertices [id name values[]]:
+0 a
+1 b
+2 c
+3 d
+4 e
+Edges [idInitialVertex idFinalVertex values[]]
+0 1 3 8
+0 2 2 7
+0 3 3 3
+1 3 2 5
+1 4 1 6
+2 3 1 4
+4 3 3 9

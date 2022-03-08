@@ -1,0 +1,35 @@
+Name: Graphe_01.tgoGraph
+Oriented: true
+Parameters [nbVertices nbValuesByVertex nbEdges nbValuesByEdge]:
+12 0 17 0
+Vertices [id name values[]]:
+0 a
+1 b
+2 c
+3 d
+4 e
+5 f
+6 g
+7 h
+8 i
+9 j
+10 k
+11 l
+Edges [idInitialVertex idFinalVertex values[]]:
+0 1
+0 5
+0 6
+1 6
+2 6
+3 9
+5 1
+5 6
+5 10
+6 7
+7 2
+7 8
+8 3
+8 11
+9 4
+9 8
+10 6
