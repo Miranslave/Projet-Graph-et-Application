@@ -72,26 +72,33 @@ public class Graphe {
 
                 //Boucle de lecture des arcs
                 if (6 + curt_graph.getNbSommet() <= compt && compt <= 6 + curt_graph.getNbSommet() + curt_graph.getNbArcs()) {
-
+                    //Initialisation de la listeAdjacence
                     for (int i = 0; i < curt_graph.getNbSommet(); i++) {
                         curt_graph.getListeAdjacence().add(new LinkedList<Edge>());
                     }
+                    //Boucle remplissage de listeAdjacence
                     for (int i = 0; i < curt_graph.getNbArcs(); i++) {
                         strng = obj.readLine();
                         compt += 1;
+
                         String[] edge_nom = strng.split(" ");
+                        //On créer l'arc qu'on ajoutera dans listeAdjacence
                         Edge crt_edg = new Edge(Integer.parseInt(edge_nom[1]), curt_graph.getNbValeursParArc());
+                        //Si l'arc contient des valeurs, alors on les ajoutes
                         if (edge_nom.length > 0) {
                             for (int m = 2; m < edge_nom.length; m++) {
                                 crt_edg.setValeurs(m % curt_graph.getNbValeursParArc(),
                                         Integer.parseInt(edge_nom[m]));
                             }
                         }
+                        //On ajoute a chaque sommet de l'edge 1 à son degré
                         curt_graph.degree[Integer.parseInt(edge_nom[1])] += 1;
                         curt_graph.degree[Integer.parseInt(edge_nom[0])] += 1;
+                        //On ajoute au sommet concerné l'edge qu'o nvient de créer
                         curt_graph.getListeAdjacence().get(Integer.parseInt(edge_nom[0])).add(crt_edg);
 
                     }
+
                     if (!curt_graph.oriente) {
                         for (int h = 0; h < curt_graph.getListeAdjacence().size(); h++) {
                             for (int u = 0; u < curt_graph.getListeAdjacence().get(h).size(); u++) {
@@ -113,6 +120,7 @@ public class Graphe {
                     }
 
                 }
+                //A la fin de chaque traitement de ligne on incrémente le compteur de ligne d'un
                 compt += 1;
             }
         } catch (NumberFormatException e) {
