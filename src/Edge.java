@@ -37,7 +37,7 @@ public class Edge {
         return this.valeurs;
     }
 
-    public void setValeurs(int index, int valeur) {
+    public void setValeurs(int index, double valeur) {
         this.valeurs[index] = valeur;
     }
     //endregion

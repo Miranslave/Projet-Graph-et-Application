@@ -28,9 +28,8 @@ public class Graphe {
     public static Graphe ImporterGraphe(String nomfichier) throws IOException {
         Graphe curt_graph = new Graphe();
 
-        //chemin Fares : C:\\Users\\Farès Zaroui\\Desktop\\Graph et application\\" + nomfichier + ".tgoGraph
-        //chemin Benj : E:\\Programmation\\Java\\Projet-Graph-et-Application\\graphs\\" + nomfichier + ".tgoGraph
-        File doc = new File("E:\\Programmation\\Java\\Projet-Graph-et-Application\\graphs\\" + nomfichier + ".tgoGraph");
+        // chemin relatif : "../graphs/" +nomfichier+".tgoGraph"
+        File doc = new File("./graphs/" +nomfichier+".tgoGraph");
         try (BufferedReader obj = new BufferedReader(new FileReader(doc))) {
             String strng;
             int compt = 1;
@@ -88,7 +87,7 @@ public class Graphe {
                         if (edge_nom.length > 0) {
                             for (int m = 2; m < edge_nom.length; m++) {
                                 crt_edg.setValeurs(m % curt_graph.getNbValeursParArc(),
-                                        Integer.parseInt(edge_nom[m]));
+                                Double.parseDouble(edge_nom[m]));
                             }
                         }
                         //On ajoute a chaque sommet de l'edge 1 à son degré
@@ -109,7 +108,6 @@ public class Graphe {
                                     if (curt_graph.getListeAdjacence().get(nouvelle_indice).get(o)
                                             .getSommetTerminal() == reversed_edge.getSommetTerminal()) {
                                         already_in = true;
-                                        System.out.println("test");
                                     }
                                 }
                                 if (!already_in) {
@@ -162,14 +160,19 @@ public class Graphe {
 
     //Affichage d'un graph et de ses params
     public void affichage() {
-        System.out.println("Graphe [" + "\n oriente=" + oriente
+        System.out.println("\n oriente=" + oriente
                 + ", \n nbSommet=" + nbSommet +
                 ",\n nbArcs=" + nbArcs
                 + ",\n nbValeursParArc=" + nbValeursParArc
                 + ",\n\n Degree");
-        for (int x = 0; x < degree.length; x++) {
-            System.out.println(x + ":" + degree[x]);
-        }
+        //for (int x = 0; x < degree.length; x++) {
+         //   System.out.println(x + ":" + degree[x]);
+        //}
+        // Séparateur
+        /*System.out.println("\n");
+        System.out.println("------------------------------------------");
+        System.out.println("\n");
+
         System.out.println("\n Liste d'adjacence");
         for (int i = 0; i < listeAdjacence.size(); i++) {
             System.out.print(i + " : ");
@@ -182,8 +185,18 @@ public class Graphe {
             }
             System.out.print("\n");
         }
+        // Séparateur*/
     }
 
+    public void affiche_sommet(){
+        System.out.println("\n");
+        System.out.println("------------------------------------------");
+        System.out.println("\n");
+        System.out.println("\n Liste des Sommets");
+        for (int i = 0; i < listeSommets.size(); i++){
+            System.out.print(i+":"+listeSommets.get(i).affichage()+"\n");
+        }
+    }
     //region Get / Set
     public boolean isOriente() {
         return oriente;

@@ -14,6 +14,9 @@ public class Vertex {
         this.nom = nom;
     }
 
+    public String affichage() {
+        return nom;
+    }
     //Affichage d'un vertex
     public String toString() {
         return "Vertex [nom=" + nom + "]";
