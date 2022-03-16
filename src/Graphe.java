@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.io.*;
 
 public class Graphe {
@@ -178,7 +175,37 @@ public class Graphe {
     }
     // endregion
 
-    // region Affichage
+    public void lecture_csv(){
+        File doc = new File("./graphs/CommunesFrance.csv");
+        try (BufferedReader obj = new BufferedReader(new FileReader(doc))) {
+            String strng;
+            obj.readLine();
+            while ((strng = obj.readLine()) != null){
+                String[] param_int = strng.split(";");
+                //On extrait la valeur de la population de la ville
+                int pop_temp = Integer.parseInt(param_int[2]);
+
+                //On fait une boucle de parcour de chaque sommet pour lui attribuer sa pop
+                for(int i = 0; i< listeSommets.size(); i++){
+                    //Si nous observons une une correspondance entre le sommet et le
+                    if(listeSommets.get(i).getNom().equalsIgnoreCase(param_int[0])){
+                        listeSommets.get(i).setPop(pop_temp);
+                        System.out.println(listeSommets.get(i).affichage());
+                    }
+                }
+
+
+            };
+        } catch (NumberFormatException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+        // region Affichage
 
     // Affichage des caratériqtique du graph créer
     public void affichage_resume() {

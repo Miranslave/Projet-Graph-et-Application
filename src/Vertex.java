@@ -48,7 +48,7 @@ public class Vertex {
 
     // endregion
     public String affichage() {
-        return nom;
+        return nom + " : " + pop;
     }
 
     // Affichage d'un vertex
