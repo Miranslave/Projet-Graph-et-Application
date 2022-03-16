@@ -32,7 +32,7 @@ public class Edge {
     public double getValeurs(int index) {
         return valeurs[index];
     }
-
+    
     public double[] getTab(){
         return this.valeurs;
     }

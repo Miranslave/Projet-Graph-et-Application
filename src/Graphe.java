@@ -12,6 +12,7 @@ public class Graphe {
     private ArrayList<Vertex> listeSommets;
     private ArrayList<LinkedList<Edge>> listeAdjacence;
     private int[] degree;
+    public Object getListeAdjacence;
 
     // Constructeur
     public Graphe() {
@@ -65,9 +66,9 @@ public class Graphe {
                     for (int i = 0; i < curt_graph.getNbSommet(); i++) {
                         strng = obj.readLine();
                         compt += 1;
-                        String[] sommet_nom = strng.split(" ");
+                        String[] sommet = strng.split(" ");
                         // Ajout du sommet dans ListeSommets
-                        curt_graph.getListeSommets().add(new Vertex(sommet_nom[1]));
+                        curt_graph.getListeSommets().add(new Vertex(sommet[1],sommet[2],sommet[3]));
                     }
                 }
 
@@ -136,11 +137,19 @@ public class Graphe {
 
     // region Parcours 
 
+    public void djikstra(int depart, int arrive){
+        ArrayList<Vertex> sommet;
+
+
+    }
+
+
+
     // Methode de parcours en Largeur du graphique, à partir d'un sommet placé en
     // paramètre
     // DE FARES NE PAS TOUCHER JE SUIS EN TRAIN DE TAFFER DESSU EN ATTENDANT ON
     // LAISSE EN STAND BY FAUT FAIRE LE DJIKSTRA 16/03
-    public void parcoursLargeur(int indexsommetDepart) {
+    public void parcoursLargeur(int depart, int arrive) {
         int[] dist = new int[this.listeSommets.size()];
         Vertex[] pere = new Vertex[this.listeSommets.size()];
         int[] couleur = new int[this.listeSommets.size()];// 0=Blanc / 1=Gris / 2=Noir
@@ -150,8 +159,8 @@ public class Graphe {
             pere[i] = null;
             dist[i] = 0;
         }
-        file.add(indexsommetDepart);
-        couleur[indexsommetDepart] = 1;
+        file.add(depart);
+        couleur[depart] = 1;
         while (!file.isEmpty()) {
             int u = file.get(0);
             for (int v = 0; v < this.getListeAdjacence().get(u).size(); v++) {
@@ -216,6 +225,16 @@ public class Graphe {
         }
     }
     // endregion
+
+    public ArrayList<Vertex> parent(int v) {
+        ArrayList<Vertex> parent = new ArrayList<Vertex>();
+        int temp;
+            for (int i = 0; i < listeAdjacence.get(v).size();i++){
+                temp = listeAdjacence.get(v).get(i).getSommetTerminal();
+                parent.add(listeSommets.get(temp));
+            }
+        return parent;
+    }
 
     // region Get / Set
     public boolean isOriente() {
