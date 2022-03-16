@@ -13,7 +13,7 @@ public class Graphe {
     private ArrayList<LinkedList<Edge>> listeAdjacence;
     private int[] degree;
 
-    //Constructeur
+    // Constructeur
     public Graphe() {
         this.oriente = true;
         this.nbSommet = 0;
@@ -24,18 +24,19 @@ public class Graphe {
         this.degree = new int[0];
     }
 
-    //Import d'un graphique à partir d'un fichier
+    // Import d'un graphique à partir d'un fichier
     public static Graphe ImporterGraphe(String nomfichier) throws IOException {
         Graphe curt_graph = new Graphe();
 
         // chemin relatif : "../graphs/" +nomfichier+".tgoGraph"
-        File doc = new File("./graphs/" +nomfichier+".tgoGraph");
+        File doc = new File("./graphs/" + nomfichier + ".tgoGraph");
         try (BufferedReader obj = new BufferedReader(new FileReader(doc))) {
             String strng;
             int compt = 1;
-            // Boucle de lecture du fichier, on le lit tant que la ligne n'est pas null (fin de fichier)
+            // Boucle de lecture du fichier, on le lit tant que la ligne n'est pas null (fin
+            // de fichier)
             while ((strng = obj.readLine()) != null) {
-                //Determination de l'orientation du graph
+                // Determination de l'orientation du graph
                 if (compt == 2) {
                     String[] tab_crt = strng.split(" ");
                     if (tab_crt[1].equalsIgnoreCase("true")) {
@@ -44,56 +45,58 @@ public class Graphe {
                         curt_graph.setOriente(false);
                     }
                 }
-                //Definition du nombre de sommet, du nombre d'arcs, du nombre de valeurs par arcs.
-                //On initialise pour chaque sommet son degré à 0
+                // Definition du nombre de sommet, du nombre d'arcs, du nombre de valeurs par
+                // arcs.
+                // On initialise pour chaque sommet son degré à 0
                 if (compt == 4) {
                     String[] param_int = strng.split(" ");
                     curt_graph.setNbSommet(Integer.parseInt(param_int[0]));
                     curt_graph.setNbArcs(Integer.parseInt(param_int[2]));
                     curt_graph.setNbValeursParArc(Integer.parseInt(param_int[3]));
                     curt_graph.setDegree(new int[curt_graph.getNbSommet()]);
-                    //Initialisation du degré i à 0
+                    // Initialisation du degré i à 0
                     for (int i = 0; i < curt_graph.getNbSommet(); i++) {
                         curt_graph.degree[i] = 0;
                     }
                 }
 
-                //Boucle de lecteur de saisie de chaque sommet
+                // Boucle de lecteur de saisie de chaque sommet
                 if (5 <= compt && compt <= 5 + curt_graph.getNbSommet()) {
                     for (int i = 0; i < curt_graph.getNbSommet(); i++) {
                         strng = obj.readLine();
                         compt += 1;
                         String[] sommet_nom = strng.split(" ");
-                        //Ajout du sommet dans ListeSommets
+                        // Ajout du sommet dans ListeSommets
                         curt_graph.getListeSommets().add(new Vertex(sommet_nom[1]));
                     }
                 }
 
-                //Boucle de lecture des arcs
-                if (6 + curt_graph.getNbSommet() <= compt && compt <= 6 + curt_graph.getNbSommet() + curt_graph.getNbArcs()) {
-                    //Initialisation de la listeAdjacence
+                // Boucle de lecture des arcs
+                if (6 + curt_graph.getNbSommet() <= compt
+                        && compt <= 6 + curt_graph.getNbSommet() + curt_graph.getNbArcs()) {
+                    // Initialisation de la listeAdjacence
                     for (int i = 0; i < curt_graph.getNbSommet(); i++) {
                         curt_graph.getListeAdjacence().add(new LinkedList<Edge>());
                     }
-                    //Boucle remplissage de listeAdjacence
+                    // Boucle remplissage de listeAdjacence
                     for (int i = 0; i < curt_graph.getNbArcs(); i++) {
                         strng = obj.readLine();
                         compt += 1;
 
                         String[] edge_nom = strng.split(" ");
-                        //On créer l'arc qu'on ajoutera dans listeAdjacence
+                        // On créer l'arc qu'on ajoutera dans listeAdjacence
                         Edge crt_edg = new Edge(Integer.parseInt(edge_nom[1]), curt_graph.getNbValeursParArc());
-                        //Si l'arc contient des valeurs, alors on les ajoutes
+                        // Si l'arc contient des valeurs, alors on les ajoutes
                         if (edge_nom.length > 0) {
                             for (int m = 2; m < edge_nom.length; m++) {
                                 crt_edg.setValeurs(m % curt_graph.getNbValeursParArc(),
-                                Double.parseDouble(edge_nom[m]));
+                                        Double.parseDouble(edge_nom[m]));
                             }
                         }
-                        //On ajoute a chaque sommet de l'edge 1 à son degré
+                        // On ajoute a chaque sommet de l'edge 1 à son degré
                         curt_graph.degree[Integer.parseInt(edge_nom[1])] += 1;
                         curt_graph.degree[Integer.parseInt(edge_nom[0])] += 1;
-                        //On ajoute au sommet concerné l'edge qu'o nvient de créer
+                        // On ajoute au sommet concerné l'edge qu'o nvient de créer
                         curt_graph.getListeAdjacence().get(Integer.parseInt(edge_nom[0])).add(crt_edg);
 
                     }
@@ -118,7 +121,8 @@ public class Graphe {
                     }
 
                 }
-                //A la fin de chaque traitement de ligne on incrémente le compteur de ligne d'un
+                // A la fin de chaque traitement de ligne on incrémente le compteur de ligne
+                // d'un
                 compt += 1;
             }
         } catch (NumberFormatException e) {
@@ -129,7 +133,13 @@ public class Graphe {
 
     }
 
-    //Methode de parcours en Largeur du graphique, à partir d'un sommet placé en paramètre
+
+    // region Parcours 
+
+    // Methode de parcours en Largeur du graphique, à partir d'un sommet placé en
+    // paramètre
+    // DE FARES NE PAS TOUCHER JE SUIS EN TRAIN DE TAFFER DESSU EN ATTENDANT ON
+    // LAISSE EN STAND BY FAUT FAIRE LE DJIKSTRA 16/03
     public void parcoursLargeur(int indexsommetDepart) {
         int[] dist = new int[this.listeSommets.size()];
         Vertex[] pere = new Vertex[this.listeSommets.size()];
@@ -152,52 +162,62 @@ public class Graphe {
                     file.add(v);
                 }
                 file.remove(0);
-                couleur[u]=2;
+                couleur[u] = 2;
             }
         }
 
     }
+    // endregion
 
-    //Affichage d'un graph et de ses params
-    public void affichage() {
+    // region Affichage
+
+    // Affichage des caratériqtique du graph créer
+    public void affichage_resume() {
         System.out.println("\n oriente=" + oriente
                 + ", \n nbSommet=" + nbSommet +
                 ",\n nbArcs=" + nbArcs
-                + ",\n nbValeursParArc=" + nbValeursParArc
-                + ",\n\n Degree");
-        //for (int x = 0; x < degree.length; x++) {
-         //   System.out.println(x + ":" + degree[x]);
-        //}
-        // Séparateur
-        /*System.out.println("\n");
-        System.out.println("------------------------------------------");
-        System.out.println("\n");
+                + ",\n nbValeursParArc=" + nbValeursParArc);
+    }
+
+    // Affichage de la liste d'adjacence du graph
+    public void affichage_adjacence() {
 
         System.out.println("\n Liste d'adjacence");
         for (int i = 0; i < listeAdjacence.size(); i++) {
-            System.out.print(i + " : ");
-            if(listeAdjacence.get(i).size() ==0){
+            System.out.print(i + " " + listeSommets.get(i).affichage() + " : ");
+            if (listeAdjacence.get(i).size() == 0) {
                 System.out.print("Vide");
-            }else {
+            } else {
                 for (int j = 0; j < listeAdjacence.get(i).size(); j++) {
                     System.out.print(listeAdjacence.get(i).get(j).affichage() + " ");
                 }
             }
             System.out.print("\n");
         }
-        // Séparateur*/
+
     }
 
-    public void affiche_sommet(){
+    // Affiche la liste des sommet avec le nom de la communes
+    public void affiche_sommet() {
         System.out.println("\n");
         System.out.println("------------------------------------------");
         System.out.println("\n");
         System.out.println("\n Liste des Sommets");
-        for (int i = 0; i < listeSommets.size(); i++){
-            System.out.print(i+":"+listeSommets.get(i).affichage()+"\n");
+        for (int i = 0; i < listeSommets.size(); i++) {
+            System.out.print(i + ":" + listeSommets.get(i).affichage() + "\n");
         }
     }
-    //region Get / Set
+
+    // Affichage de la liste des degrees par communes
+    public void affichage_degree() {
+        // Séparateur
+        for (int x = 0; x < listeSommets.size(); x++) {
+            System.out.println(x + " " + listeSommets.get(x).affichage() + ":" + degree[x]);
+        }
+    }
+    // endregion
+
+    // region Get / Set
     public boolean isOriente() {
         return oriente;
     }
@@ -241,13 +261,13 @@ public class Graphe {
     public void setDegree(int[] degree) {
         this.degree = degree;
     }
-    //endregion
+    // endregion
 
     @Override
-    //region toString
-    //toString liste adjacence
+    // region toString
+    // toString liste adjacence
     public String toString() {
         return "Graphe [listeAdjacence=" + listeAdjacence + "]";
     }
-    //endregion
+    // endregion
 }
