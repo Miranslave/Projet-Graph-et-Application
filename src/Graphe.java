@@ -65,7 +65,7 @@ public class Graphe {
                         compt += 1;
                         String[] sommet = strng.split(" ");
                         // Ajout du sommet dans ListeSommets
-                        curt_graph.getListeSommets().add(new Vertex(sommet[1],sommet[2],sommet[3]));
+                        curt_graph.getListeSommets().add(new Vertex(sommet[1], sommet[2], sommet[3]));
                     }
                 }
 
@@ -131,16 +131,12 @@ public class Graphe {
 
     }
 
+    // region Parcours
 
-    // region Parcours 
-
-    public void djikstra(int depart, int arrive){
-        ArrayList<Vertex> sommet;
-
+    public void djikstra(int depart, int arrive) {
+        // initialisation
 
     }
-
-
 
     // Methode de parcours en Largeur du graphique, à partir d'un sommet placé en
     // paramètre
@@ -175,37 +171,37 @@ public class Graphe {
     }
     // endregion
 
-    public void lecture_csv(){
+    public void lecture_csv() {
         File doc = new File("./graphs/CommunesFrance.csv");
         try (BufferedReader obj = new BufferedReader(new FileReader(doc))) {
             String strng;
             obj.readLine();
-            while ((strng = obj.readLine()) != null){
+            while ((strng = obj.readLine()) != null) {
                 String[] param_int = strng.split(";");
-                //On extrait la valeur de la population de la ville
+                // On extrait la valeur de la population de la ville
                 int pop_temp = Integer.parseInt(param_int[2]);
 
-                //On fait une boucle de parcour de chaque sommet pour lui attribuer sa pop
-                for(int i = 0; i< listeSommets.size(); i++){
-                    //Si nous observons une une correspondance entre le sommet et le
-                    if(listeSommets.get(i).getNom().equalsIgnoreCase(param_int[0])){
+                // On fait une boucle de parcour de chaque sommet pour lui attribuer sa pop
+                for (int i = 0; i < listeSommets.size(); i++) {
+                    // Si nous observons une une correspondance entre le sommet et le
+                    if (listeSommets.get(i).getNom().equalsIgnoreCase(param_int[0])) {
                         listeSommets.get(i).setPop(pop_temp);
-                        System.out.println(listeSommets.get(i).affichage());
+                        System.out.println(listeSommets.get(i).affichage_pop());
                     }
                 }
 
-
-            };
+            }
+            ;
         } catch (NumberFormatException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-        // region Affichage
+    // region Affichage
 
     // Affichage des caratériqtique du graph créer
     public void affichage_resume() {
@@ -220,7 +216,7 @@ public class Graphe {
 
         System.out.println("\n Liste d'adjacence");
         for (int i = 0; i < listeAdjacence.size(); i++) {
-            System.out.print(i + " " + listeSommets.get(i).affichage() + " : ");
+            System.out.print(i + " " + listeSommets.get(i).affichage());
             if (listeAdjacence.get(i).size() == 0) {
                 System.out.print("Vide");
             } else {
@@ -256,10 +252,10 @@ public class Graphe {
     public ArrayList<Vertex> parent(int v) {
         ArrayList<Vertex> parent = new ArrayList<Vertex>();
         int temp;
-            for (int i = 0; i < listeAdjacence.get(v).size();i++){
-                temp = listeAdjacence.get(v).get(i).getSommetTerminal();
-                parent.add(listeSommets.get(temp));
-            }
+        for (int i = 0; i < listeAdjacence.get(v).size(); i++) {
+            temp = listeAdjacence.get(v).get(i).getSommetTerminal();
+            parent.add(listeSommets.get(temp));
+        }
         return parent;
     }
 
@@ -308,6 +304,28 @@ public class Graphe {
         this.degree = degree;
     }
     // endregion
+
+    public Vertex Besttrack(int id_vertex) {
+        double best = 10000;
+        Vertex res = null;
+        Boolean arrive = false;
+        
+            List<Edge> chemin_possible = this.getListeAdjacence().get(id_vertex);
+            for (Edge chemin : chemin_possible) {
+                double distance_crt = chemin.getValeurs(0);
+                if (distance_crt < best) {
+                    best = distance_crt;
+                    res = this.getListeSommets().get(chemin.getSommetTerminal());
+                }
+            }
+        
+        return res;
+    }
+
+    public int DoubletoInt(double v) {
+        int IntValue = (int) Math.round(v);
+        return IntValue;
+    }
 
     @Override
     // region toString
