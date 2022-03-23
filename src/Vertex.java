@@ -3,13 +3,16 @@ public class Vertex {
     private Double latitude;
     private Double longitude;
     private int pop;
+    private int id;
 
+    //sommet
     // Constructeur
-    public Vertex(String nom, String latitude_s, String longitude_s) {
+    public Vertex(String nom, String latitude_s, String longitude_s,int id) {
         this.nom = nom;
         this.latitude = Double.parseDouble(latitude_s);
         this.longitude = Double.parseDouble(longitude_s);
         this.pop = 0;
+        this.id = id;
     }
 
     // region Get/Set
@@ -21,6 +24,9 @@ public class Vertex {
         this.nom = nom;
     }
 
+    public int getid() {
+        return id;
+    }
 
     public Double getLatitude() {
         return latitude;

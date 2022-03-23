@@ -4,6 +4,7 @@ public class Edge {
     private int sommetTerminal;
     private double[] valeurs;
 
+    //arrête
     //Constructeurs
     public Edge(int sommetTerminal, int nb_param_arc) {
         this.sommetTerminal = sommetTerminal;

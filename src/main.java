@@ -4,8 +4,12 @@ public class main {
     public static void main(String[] args) throws IOException {
         
         Graphe test = Graphe.ImporterGraphe("CommunesFrance_5000coord");
-        System.out.println(test.getListeSommets().get(0).affichage()+test.getListeAdjacence().get(0));
-        System.out.println(test.Besttrack(0));
+
+        //System.out.println(test.estfils(3652, 0));
+        test.djikstra(0);
+        //System.out.println(test.getListeSommets().get(0).affichage()+test.getListeAdjacence().get(0));
+        
+        //System.out.println(test.Besttrack(0));
         
         //test.lecture_csv();
 

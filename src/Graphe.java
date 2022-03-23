@@ -65,7 +65,7 @@ public class Graphe {
                         compt += 1;
                         String[] sommet = strng.split(" ");
                         // Ajout du sommet dans ListeSommets
-                        curt_graph.getListeSommets().add(new Vertex(sommet[1], sommet[2], sommet[3]));
+                        curt_graph.getListeSommets().add(new Vertex(sommet[1], sommet[2], sommet[3],i));
                     }
                 }
 
@@ -94,7 +94,7 @@ public class Graphe {
                         // On ajoute a chaque sommet de l'edge 1 à son degré
                         curt_graph.degree[Integer.parseInt(edge_nom[1])] += 1;
                         curt_graph.degree[Integer.parseInt(edge_nom[0])] += 1;
-                        // On ajoute au sommet concerné l'edge qu'o nvient de créer
+                        // On ajoute au sommet concerné l'edge qu'on vient de créer
                         curt_graph.getListeAdjacence().get(Integer.parseInt(edge_nom[0])).add(crt_edg);
 
                     }
@@ -132,9 +132,41 @@ public class Graphe {
     }
 
     // region Parcours
-
-    public void djikstra(int depart, int arrive) {
-        // initialisation
+    
+    public void djikstra(int depart) {
+        // X sommet - U ensemble des arcs - n nb sommet - m nb nbArcs
+        ArrayList<Vertex> Z = new ArrayList<Vertex>();
+        double[] lambda = new double[this.listeSommets.size()-1];
+        
+        for (int i = 0; i < this.listeSommets.size()-1;i++){
+            if(this.estfils(depart, i)){
+                int id_adjacence = 0;
+                List<Edge> chemin_possible = this.getListeAdjacence().get(depart);
+                for(int j = 0; j < chemin_possible.size();j++){
+                    if(this.getListeSommets().get(chemin_possible.get(j).getSommetTerminal()) == 
+                    this.getListeSommets().get(i)){
+                        id_adjacence = j;
+                    }
+                }
+                lambda[i] = this.getListeAdjacence().get(depart).get(id_adjacence).getValeurs(0);
+                System.out.println(lambda[i]);
+            }
+            else{
+            lambda[i] = 10000.0;
+            }
+            //System.out.println(lambda[i]);
+        }
+        for (Vertex v : this.listeSommets) {
+            if (v != this.listeSommets.get(depart)) {
+                Z.add(v);
+            }
+        }
+        
+        while (Z.size() > 0) {
+            
+        }
+        
+        //System.out.println(Z); 
 
     }
 
@@ -309,18 +341,31 @@ public class Graphe {
         double best = 10000;
         Vertex res = null;
         Boolean arrive = false;
-        
-            List<Edge> chemin_possible = this.getListeAdjacence().get(id_vertex);
-            for (Edge chemin : chemin_possible) {
-                double distance_crt = chemin.getValeurs(0);
-                if (distance_crt < best) {
-                    best = distance_crt;
-                    res = this.getListeSommets().get(chemin.getSommetTerminal());
-                }
+
+        List<Edge> chemin_possible = this.getListeAdjacence().get(id_vertex);
+        for (Edge chemin : chemin_possible) {
+            double distance_crt = chemin.getValeurs(0);
+            if (distance_crt < best) {
+                best = distance_crt;
+                res = this.getListeSommets().get(chemin.getSommetTerminal());
             }
-        
+        }
+
         return res;
     }
+    
+    public boolean estfils(int id_vertex_pere, int id_vertex_tmp) {
+        boolean res = false;
+        List<Edge> chemin_possible = this.getListeAdjacence().get(id_vertex_pere);
+        for(Edge chemin : chemin_possible){
+            if(this.getListeSommets().get(chemin.getSommetTerminal()) == 
+            this.getListeSommets().get(id_vertex_tmp)){
+                res = true;
+            }
+        }
+        return res;
+    }
+
 
     public int DoubletoInt(double v) {
         int IntValue = (int) Math.round(v);
