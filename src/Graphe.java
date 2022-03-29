@@ -172,7 +172,8 @@ public class Graphe {
 
     // Methode de parcours en Largeur du graphique, à partir d'un sommet placé en
     // paramètre
-    public void parcoursLargeur(int sommetDepart){
+    public HashMap<Integer, int[]> parcoursLargeur(int sommetDepart){
+        HashMap<Integer, int[]> tableau = new HashMap<Integer, int[]>();
         //Distance d'un sommet au sommet de départ
         int distance = 1;
         //Ordre de traitement du sommet
@@ -181,18 +182,19 @@ public class Graphe {
         ArrayList<Integer> file = new ArrayList<Integer>();
         //ArrayList contenant pour chaque sommet un tableau de 3 entier (resp : etat , distance au sommet placé en params , son ordre de traitement)
         //valeur des états : 0 = non marqué ; 1 = marqué; 2 = traité
-        ArrayList<int[]> jsp = new ArrayList<int[]>();
 
         //Boucle d'initialisation de l'arraylist
         for (int i = 0; i <=getNbSommet(); i++){
             int[] crt_edge = new int[3];
             crt_edge[1] = getNbSommet()+2;
-            jsp.add(crt_edge);
+            tableau.put(i,crt_edge);
+
         }
         //initialisation des valeurs pour le sommet placé en param
-        jsp.get(sommetDepart)[0]=1;
-        jsp.get(sommetDepart)[1]=0;
-        jsp.get(sommetDepart)[2]=1;
+        tableau.get(sommetDepart)[0]=1;
+        tableau.get(sommetDepart)[1]=0;
+        tableau.get(sommetDepart)[2]=1;
+
         file.add(sommetDepart);
 
         //Boucle de parcours
@@ -203,20 +205,23 @@ public class Graphe {
             for (int i = 0; i< listeAdjacence.get(crt_edge).size(); i++) {
 
                 //On verifie que le voisin n'est pas déjà marqué (état 1) ou traité (état 2)
-                if (jsp.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[0] == 0) {
+                if (tableau.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[0] == 0) {
 
                     //On ajoute chaque voisin à la file d'attente
                     file.add(listeAdjacence.get(crt_edge).get(i).getSommetTerminal());
                     //On modifie les valeurs d'états de chaque voisin
-                    jsp.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[0] = 1;
-                    jsp.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[1] = distance;
-                    jsp.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[2] = ordreTraitement;
+                    tableau.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[0] = 1;
+                    tableau.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[1] = distance;
+                    tableau.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[2] = ordreTraitement;
+
                     ordreTraitement += 1;
                 }
             }
             distance+=1;
             //On marque le sommet actuellement en traitement comme traité (état 2)
-            jsp.get(crt_edge)[0] = 2;
+
+            tableau.get(crt_edge)[0] = 2;
+            //jsp.get(crt_edge)[0] = 2;
             //On enlève le sommet traité de la file d'attente
             file.remove(0);
         }
@@ -225,9 +230,9 @@ public class Graphe {
 
         for(int i=0; i<getNbSommet(); i++){
 
-            System.out.println("Le sommet "+ i + " a été traité en "+ jsp.get(i)[2] + " position");
+            System.out.println("Le sommet "+ i + " a été traité en "+ tableau.get(i)[2] + " position");
         }
-
+        return tableau;
 
     }
     // endregion
