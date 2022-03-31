@@ -172,33 +172,67 @@ public class Graphe {
 
     // Methode de parcours en Largeur du graphique, à partir d'un sommet placé en
     // paramètre
-    // DE FARES NE PAS TOUCHER JE SUIS EN TRAIN DE TAFFER DESSU EN ATTENDANT ON
-    // LAISSE EN STAND BY FAUT FAIRE LE DJIKSTRA 16/03
-    public void parcoursLargeur(int depart, int arrive) {
-        int[] dist = new int[this.listeSommets.size()];
-        Vertex[] pere = new Vertex[this.listeSommets.size()];
-        int[] couleur = new int[this.listeSommets.size()];// 0=Blanc / 1=Gris / 2=Noir
+    public HashMap<Integer, int[]> parcoursLargeur(int sommetDepart){
+        HashMap<Integer, int[]> tableau = new HashMap<Integer, int[]>();
+        //Distance d'un sommet au sommet de départ
+        int distance = 1;
+        //Ordre de traitement du sommet
+        int ordreTraitement = 2;
+        //Arraylist servant de file pour les sommet à traiter
         ArrayList<Integer> file = new ArrayList<Integer>();
-        for (int i = 0; i < this.listeSommets.size(); i++) {
-            couleur[i] = 0;
-            pere[i] = null;
-            dist[i] = 0;
+        //ArrayList contenant pour chaque sommet un tableau de 3 entier (resp : etat , distance au sommet placé en params , son ordre de traitement)
+        //valeur des états : 0 = non marqué ; 1 = marqué; 2 = traité
+
+        //Boucle d'initialisation de l'arraylist
+        for (int i = 0; i <=getNbSommet(); i++){
+            int[] crt_edge = new int[3];
+            crt_edge[1] = getNbSommet()+2;
+            tableau.put(i,crt_edge);
+
         }
-        file.add(depart);
-        couleur[depart] = 1;
-        while (!file.isEmpty()) {
-            int u = file.get(0);
-            for (int v = 0; v < this.getListeAdjacence().get(u).size(); v++) {
-                if (couleur[v] == 0) {
-                    couleur[v] = 1;
-                    dist[v] = dist[u] + 1;
-                    pere[v] = this.listeSommets.get(u);
-                    file.add(v);
+        //initialisation des valeurs pour le sommet placé en param
+        tableau.get(sommetDepart)[0]=1;
+        tableau.get(sommetDepart)[1]=0;
+        tableau.get(sommetDepart)[2]=1;
+
+        file.add(sommetDepart);
+
+        //Boucle de parcours
+        while(file.size() >0){
+
+            int  crt_edge = file.get(0);
+            //On parcour les sommets voisins au sommet étudié
+            for (int i = 0; i< listeAdjacence.get(crt_edge).size(); i++) {
+
+                //On verifie que le voisin n'est pas déjà marqué (état 1) ou traité (état 2)
+                if (tableau.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[0] == 0) {
+
+                    //On ajoute chaque voisin à la file d'attente
+                    file.add(listeAdjacence.get(crt_edge).get(i).getSommetTerminal());
+                    //On modifie les valeurs d'états de chaque voisin
+                    tableau.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[0] = 1;
+                    tableau.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[1] = distance;
+                    tableau.get(listeAdjacence.get(crt_edge).get(i).getSommetTerminal())[2] = ordreTraitement;
+
+                    ordreTraitement += 1;
                 }
-                file.remove(0);
-                couleur[u] = 2;
             }
+            distance+=1;
+            //On marque le sommet actuellement en traitement comme traité (état 2)
+
+            tableau.get(crt_edge)[0] = 2;
+            //jsp.get(crt_edge)[0] = 2;
+            //On enlève le sommet traité de la file d'attente
+            file.remove(0);
         }
+        //Une fois la file vide, donc que le graph a été traité on renvoie l'ordre de traitement de chaque sommet
+        //On affiche l'ordre dans lequel chaque sommet a été traité
+
+        for(int i=0; i<getNbSommet(); i++){
+
+            System.out.println("Le sommet "+ i + " a été traité en "+ tableau.get(i)[2] + " position");
+        }
+        return tableau;
 
     }
     // endregion
