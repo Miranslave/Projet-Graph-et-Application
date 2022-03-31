@@ -337,6 +337,8 @@ public class Graphe {
     }
     // endregion
 
+    
+    
     public Vertex Besttrack(int id_vertex) {
         double best = 10000;
         Vertex res = null;
@@ -353,6 +355,7 @@ public class Graphe {
 
         return res;
     }
+    
     
     public boolean estfils(int id_vertex_pere, int id_vertex_tmp) {
         boolean res = false;
