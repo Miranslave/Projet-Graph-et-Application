@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.*;
 import java.io.*;
 
@@ -132,18 +133,18 @@ public class Graphe {
     }
 
     // region Parcours
-    
+
     public void djikstra(int depart) {
         // X sommet - U ensemble des arcs - n nb sommet - m nb nbArcs
         ArrayList<Vertex> Z = new ArrayList<Vertex>();
         double[] lambda = new double[this.listeSommets.size()-1];
-        
+
         for (int i = 0; i < this.listeSommets.size()-1;i++){
             if(this.estfils(depart, i)){
                 int id_adjacence = 0;
                 List<Edge> chemin_possible = this.getListeAdjacence().get(depart);
                 for(int j = 0; j < chemin_possible.size();j++){
-                    if(this.getListeSommets().get(chemin_possible.get(j).getSommetTerminal()) == 
+                    if(this.getListeSommets().get(chemin_possible.get(j).getSommetTerminal()) ==
                     this.getListeSommets().get(i)){
                         id_adjacence = j;
                     }
@@ -161,17 +162,61 @@ public class Graphe {
                 Z.add(v);
             }
         }
-        
+
         while (Z.size() > 0) {
-            
+
         }
-        
-        //System.out.println(Z); 
+
+        //System.out.println(Z);
+
+    }
+
+    //Version que j'essaie de faire de l'algo, flemme de reprendre la tienne je recommence de zero
+    public double[] algoDjikstra(int sommetDepart, int sommetTerminal){
+        //Initialisation du programme
+            ArrayList<Vertex> sommetnontraité = this.getListeSommets();
+            //tableau contenant les distances de chaque sommet a sommetDepart
+            double[] longueur = new double[this.getNbSommet() -1];
+            for(int i = 0; i < longueur.length; i++){
+                //ne pouvant mettre la distance à l'infini, on met chaque distance à 999999999. Il ne peut y avoir une distance de 1Md de km entre deux villes en France
+                longueur[i] = 999999999;
+            }
+        longueur[sommetDepart] = 0;
+        int crt_edge = sommetDepart;
+
+        //Parcours
+        while(sommetnontraité.size() !=0){
+            int[] sommetvoisin = new int[listeAdjacence.get(crt_edge).size()];
+            for(int i =0;  i < listeAdjacence.get(crt_edge).size(); i++){
+                sommetvoisin[i] = listeAdjacence.get(crt_edge).get(i).getSommetTerminal();
+                //On compare la distance du fils qu'il a déjà à sa possible nouvelle longueur si on utilise le chemin avec le sommet pere
+                if(longueur[listeAdjacence.get(crt_edge).get(i).getSommetTerminal()] > longueur[crt_edge] + listeAdjacence.get(crt_edge).get(i).getValeurs(0)){
+                    longueur[listeAdjacence.get(crt_edge).get(i).getSommetTerminal()] = longueur[crt_edge] + listeAdjacence.get(crt_edge).get(i).getValeurs(0);
+                }
+            }
+            //boucle de recherche du plus petit arc des fils
+            int pluspetitsommet = sommetvoisin[0];
+            for(int i = 1; i< sommetvoisin.length; i++){
+                if(longueur[pluspetitsommet] > longueur[sommetvoisin[i]]){
+                    pluspetitsommet = sommetvoisin[i];
+                }
+            }
+            sommetnontraité.remove(crt_edge);
+            crt_edge = pluspetitsommet;
+
+        }
+
+
+
+
+        System.out.println("La distance est de :  " + longueur[sommetTerminal]);
+        return longueur;
+
 
     }
 
     // Methode de parcours en Largeur du graphique, à partir d'un sommet placé en
-    // paramètre
+
     public HashMap<Integer, int[]> parcoursLargeur(int sommetDepart){
         HashMap<Integer, int[]> tableau = new HashMap<Integer, int[]>();
         //Distance d'un sommet au sommet de départ
@@ -387,12 +432,12 @@ public class Graphe {
 
         return res;
     }
-    
+
     public boolean estfils(int id_vertex_pere, int id_vertex_tmp) {
         boolean res = false;
         List<Edge> chemin_possible = this.getListeAdjacence().get(id_vertex_pere);
         for(Edge chemin : chemin_possible){
-            if(this.getListeSommets().get(chemin.getSommetTerminal()) == 
+            if(this.getListeSommets().get(chemin.getSommetTerminal()) ==
             this.getListeSommets().get(id_vertex_tmp)){
                 res = true;
             }
