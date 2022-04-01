@@ -208,7 +208,9 @@ public class Graphe {
             int pluspetitsommet = sommetvoisin[0];
             for(int i = 1; i< sommetvoisin.length; i++){
                 if(longueur[pluspetitsommet] > longueur[sommetvoisin[i]]){
-                    pluspetitsommet = sommetvoisin[i];
+                    if(sommetnontraité.get(pluspetitsommet)!=null) {
+                        pluspetitsommet = sommetvoisin[i];
+                    }
                 }
             }
             System.out.println("Sommet traité : "+ crt_edge + "   , le prochain sommet étudié est :" +pluspetitsommet);
