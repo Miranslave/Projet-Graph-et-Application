@@ -171,61 +171,15 @@ public class Graphe {
 
     }
 
+    //j'ai déplacé mon code à la fin du programme, j'en refais un nouveau de 0
     //Version que j'essaie de faire de l'algo, flemme de reprendre la tienne je recommence de zero
     public double[] algoDjikstra(int sommetDepart, int sommetTerminal){
-        //Initialisation du programme
-            int[] sommettraite = new int[listeSommets.size()];
+        double[] lambda = new double[listeSommets.size()];
 
 
-            //tableau contenant les distances de chaque sommet a sommetDepart
-            double[] longueur = new double[this.listeSommets.size()];
-            for(int i = 0; i < longueur.length; i++){
-                //ne pouvant mettre la distance à l'infini, on met chaque distance à 999999999. Il ne peut y avoir une distance de 1Md de km entre deux villes en France
-                longueur[i] = 999999999.0;
-            }
-
-        longueur[sommetDepart] = 0.0;
-        int crt_edge = sommetDepart;
-        boolean arrive = false;
-        sommettraite[crt_edge] = 1;
-
-        //Parcours
-        while(!arrive){
-            //tableau contenant les fils du sommet étudié
-            int[] sommetvoisin = new int[listeAdjacence.get(crt_edge).size()];
-
-            //on parcour l'ensemble des sommet adjacent au sommet de départ
-            for(int i =0;  i < listeAdjacence.get(crt_edge).size(); i++){
-                //on ajoute chaque fils au tableau sommetvoisin
-                sommetvoisin[i] = listeAdjacence.get(crt_edge).get(i).getSommetTerminal();
-                //On compare la distance du fils qu'il a déjà à sa possible nouvelle longueur si on utilise le chemin avec le sommet pere
-                if(longueur[listeAdjacence.get(crt_edge).get(i).getSommetTerminal()] > longueur[crt_edge] + listeAdjacence.get(crt_edge).get(i).getValeurs(0)){
-                    longueur[listeAdjacence.get(crt_edge).get(i).getSommetTerminal()] = longueur[crt_edge] + listeAdjacence.get(crt_edge).get(i).getValeurs(0);
-                }
-            }
-            //boucle de recherche du plus petit arc des fils
-            int pluspetitsommet = sommetvoisin[0];
-            for(int i = 1; i< sommetvoisin.length; i++){
-                if(longueur[pluspetitsommet] > longueur[sommetvoisin[i]]){
-                    if(sommettraite[sommetvoisin[i]] == 0) {
-                        pluspetitsommet = sommetvoisin[i];
-                    }
-                }
-            }
-            System.out.println("Sommet traité : "+ crt_edge + "   , le prochain sommet étudié est :" +pluspetitsommet);
-
-            sommettraite[pluspetitsommet] = 1;
-            crt_edge = pluspetitsommet;
-            if(crt_edge == sommetTerminal){
-                arrive = true;
-            }
-
-        }
-        System.out.println("La distance est de :  " + longueur[sommetTerminal]);
-        return longueur;
-
-
+        return lambda;
     }
+
 
     // Methode de parcours en Largeur du graphique, à partir d'un sommet placé en
 
@@ -471,3 +425,57 @@ public class Graphe {
     }
     // endregion
 }
+
+
+/*
+//Initialisation du programme
+            int[] sommettraite = new int[listeSommets.size()];
+
+
+            //tableau contenant les distances de chaque sommet a sommetDepart
+            double[] longueur = new double[this.listeSommets.size()];
+            for(int i = 0; i < longueur.length; i++){
+                //ne pouvant mettre la distance à l'infini, on met chaque distance à 999999999. Il ne peut y avoir une distance de 1Md de km entre deux villes en France
+                longueur[i] = 999999999.0;
+            }
+
+        longueur[sommetDepart] = 0.0;
+        int crt_edge = sommetDepart;
+        boolean arrive = false;
+        sommettraite[crt_edge] = 1;
+
+        //Parcours
+        while(!arrive){
+            //tableau contenant les fils du sommet étudié
+            int[] sommetvoisin = new int[listeAdjacence.get(crt_edge).size()];
+
+            //on parcour l'ensemble des sommet adjacent au sommet de départ
+            for(int i =0;  i < listeAdjacence.get(crt_edge).size(); i++){
+                //on ajoute chaque fils au tableau sommetvoisin
+                sommetvoisin[i] = listeAdjacence.get(crt_edge).get(i).getSommetTerminal();
+                //On compare la distance du fils qu'il a déjà à sa possible nouvelle longueur si on utilise le chemin avec le sommet pere
+                if(longueur[listeAdjacence.get(crt_edge).get(i).getSommetTerminal()] > longueur[crt_edge] + listeAdjacence.get(crt_edge).get(i).getValeurs(0)){
+                    longueur[listeAdjacence.get(crt_edge).get(i).getSommetTerminal()] = longueur[crt_edge] + listeAdjacence.get(crt_edge).get(i).getValeurs(0);
+                }
+            }
+            //boucle de recherche du plus petit arc des fils
+            int pluspetitsommet = sommetvoisin[0];
+            for(int i = 1; i< sommetvoisin.length; i++){
+                if(longueur[pluspetitsommet] > longueur[sommetvoisin[i]]){
+                    if(sommettraite[sommetvoisin[i]] == 0) {
+                        pluspetitsommet = sommetvoisin[i];
+                    }
+                }
+            }
+            System.out.println("Sommet traité : "+ crt_edge + "   , le prochain sommet étudié est :" +pluspetitsommet);
+
+            sommettraite[pluspetitsommet] = 1;
+            crt_edge = pluspetitsommet;
+            if(crt_edge == sommetTerminal){
+                arrive = true;
+            }
+
+        }
+        System.out.println("La distance est de :  " + longueur[sommetTerminal]);
+        return longueur;
+ */
