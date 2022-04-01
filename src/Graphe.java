@@ -174,13 +174,11 @@ public class Graphe {
     //Version que j'essaie de faire de l'algo, flemme de reprendre la tienne je recommence de zero
     public double[] algoDjikstra(int sommetDepart, int sommetTerminal){
         //Initialisation du programme
-            HashMap<Integer, Vertex> sommetnontraité = new HashMap<Integer, Vertex>();
-            for (int i = 0; i < listeSommets.size(); i++) {
-                sommetnontraité.put(i,listeSommets.get(i));
-            }
+            int[] sommettraite = new int[listeSommets.size()];
+
 
             //tableau contenant les distances de chaque sommet a sommetDepart
-            double[] longueur = new double[this.getNbSommet() -1];
+            double[] longueur = new double[this.listeSommets.size()];
             for(int i = 0; i < longueur.length; i++){
                 //ne pouvant mettre la distance à l'infini, on met chaque distance à 999999999. Il ne peut y avoir une distance de 1Md de km entre deux villes en France
                 longueur[i] = 999999999.0;
@@ -189,6 +187,7 @@ public class Graphe {
         longueur[sommetDepart] = 0.0;
         int crt_edge = sommetDepart;
         boolean arrive = false;
+        sommettraite[crt_edge] = 1;
 
         //Parcours
         while(!arrive){
@@ -208,13 +207,14 @@ public class Graphe {
             int pluspetitsommet = sommetvoisin[0];
             for(int i = 1; i< sommetvoisin.length; i++){
                 if(longueur[pluspetitsommet] > longueur[sommetvoisin[i]]){
-                    if(sommetnontraité.get(pluspetitsommet)!=null) {
+                    if(sommettraite[sommetvoisin[i]] == 0) {
                         pluspetitsommet = sommetvoisin[i];
                     }
                 }
             }
             System.out.println("Sommet traité : "+ crt_edge + "   , le prochain sommet étudié est :" +pluspetitsommet);
-            sommetnontraité.remove(crt_edge);
+
+            sommettraite[pluspetitsommet] = 1;
             crt_edge = pluspetitsommet;
             if(crt_edge == sommetTerminal){
                 arrive = true;
