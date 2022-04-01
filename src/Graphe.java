@@ -211,6 +211,7 @@ public class Graphe {
                     pluspetitsommet = sommetvoisin[i];
                 }
             }
+            System.out.println("Sommet traité : "+ crt_edge + "   , le prochain sommet étudié est :" +pluspetitsommet);
             sommetnontraité.remove(crt_edge);
             crt_edge = pluspetitsommet;
             if(crt_edge == sommetTerminal){
