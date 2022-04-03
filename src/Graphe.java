@@ -1,6 +1,9 @@
 import java.lang.reflect.Array;
+import java .util.Collections;
 import java.util.*;
 import java.io.*;
+
+
 
 public class Graphe {
     private boolean oriente;
@@ -172,11 +175,51 @@ public class Graphe {
     }
 
     //j'ai déplacé mon code à la fin du programme, j'en refais un nouveau de 0
+
     //Version que j'essaie de faire de l'algo, flemme de reprendre la tienne je recommence de zero
     public double[] algoDjikstra(int sommetDepart, int sommetTerminal){
+        ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
         double[] lambda = new double[listeSommets.size()];
+        int sommetarbitraire = 0;
+        listeSommetsNonTraité.remove(sommetDepart);
+        lambda[sommetDepart] = 0;
+        //initialisation
+        //On parcours chaque sommet non traité
+        Vertex crt_vertex = new Vertex("nom", "0.0", "0.0",0);
+        for (Vertex v : listeSommetsNonTraité) {
+            //on parcour chaque sommet de la liste d'adjacence du sommet de départ
+            for(int i = 0; i < listeAdjacence.get(sommetDepart).size(); i++){
+                //si le sommet v est dans la liste d'adjacence on met à jour sa valeur
+                if(listeAdjacence.get(sommetDepart).get(i).getSommetTerminal() == v.getid()){
+                    lambda[v.getid()] = listeAdjacence.get(sommetDepart).get(i).getValeurs(0);
+                    crt_vertex = v;
+                }
+                else{
+                    lambda[v.getid()] = 999999999999.0;
+                }
+            }
+        }
 
-
+        int compteur = 0;
+        //
+        while( crt_vertex.getid() != sommetTerminal) {
+            //on recherche x appartenant à listeSommetNonTraité tel que lambda[x] soit le minimun de lambda et
+            crt_vertex = listeSommetsNonTraité.get(0);
+            for(Vertex v : listeSommetsNonTraité){
+                if(lambda[v.getid()] < lambda[crt_vertex.getid()]){
+                    crt_vertex = v;
+                }
+            }
+            listeSommetsNonTraité.remove(crt_vertex);
+            //On mets potentiellement a jour la longueur de chaque sommet
+            for (int i = 0; i < listeAdjacence.get(crt_vertex.getid()).size(); i++) {
+                if ((lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0) )< lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()]) {
+                    lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()] = lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0);
+                }
+            }
+            compteur += 1 ;
+        }
+        System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
         return lambda;
     }
 

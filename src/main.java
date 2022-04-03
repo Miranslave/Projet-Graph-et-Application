@@ -6,6 +6,9 @@ public class main {
         Graphe test = Graphe.ImporterGraphe("CommunesFrance_5000coord");
 
         //System.out.println(test.estfils(3652, 0));
+
+
+        //System.out.println(test.getListeSommets().get(3857).getNom());
         test.algoDjikstra(3857,379);
         //System.out.println(test.getListeSommets().get(0).affichage()+test.getListeAdjacence().get(0));
         
