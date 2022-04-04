@@ -1,3 +1,5 @@
+import org.jheaps.tree.FibonacciHeap;
+
 import java.lang.reflect.Array;
 import java .util.Collections;
 import java.util.*;
@@ -180,12 +182,14 @@ public class Graphe {
     public double[] algoDjikstra(int sommetDepart, int sommetTerminal){
         ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
         double[] lambda = new double[listeSommets.size()];
+        //Initialisation des valeurs du sommet de départ
         int sommetarbitraire = 0;
         listeSommetsNonTraité.remove(sommetDepart);
         lambda[sommetDepart] = 0;
         //initialisation
         //On parcours chaque sommet non traité
         Vertex crt_vertex = new Vertex("nom", "0.0", "0.0",0);
+        //Initialisation de lambda
         for (Vertex v : listeSommetsNonTraité) {
             //on parcour chaque sommet de la liste d'adjacence du sommet de départ
             for(int i = 0; i < listeAdjacence.get(sommetDepart).size(); i++){
@@ -199,8 +203,6 @@ public class Graphe {
                 }
             }
         }
-
-        int compteur = 0;
         //
         while( crt_vertex.getid() != sommetTerminal) {
             //on recherche x appartenant à listeSommetNonTraité tel que lambda[x] soit le minimun de lambda et
@@ -217,14 +219,62 @@ public class Graphe {
                     lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()] = lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0);
                 }
             }
-            compteur += 1 ;
+        }
+        System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
+        return lambda;
+    }
+
+    public double[] algoDjikstraSkipList(int sommetDepart, int sommetTerminal){
+        ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
+        double[] lambda = new double[listeSommets.size()];
+        FibonacciHeap<Double, Vertex> Skiplist = new FibonacciHeap<>();
+        //Initialisation des valeurs du sommet de départ
+        int sommetarbitraire = 0;
+        listeSommetsNonTraité.remove(sommetDepart);
+        lambda[sommetDepart] = 0;
+        //initialisation
+        //On parcours chaque sommet non traité
+        Vertex crt_vertex = new Vertex("nom", "0.0", "0.0",0);
+        //Initialisation de lambda
+        for (Vertex v : listeSommetsNonTraité) {
+            //on parcour chaque sommet de la liste d'adjacence du sommet de départ
+            for(int i = 0; i < listeAdjacence.get(sommetDepart).size(); i++){
+                //si le sommet v est dans la liste d'adjacence on met à jour sa valeur
+                if(listeAdjacence.get(sommetDepart).get(i).getSommetTerminal() == v.getid()){
+                    lambda[v.getid()] = listeAdjacence.get(sommetDepart).get(i).getValeurs(0);
+                    Skiplist.insert(listeAdjacence.get(sommetDepart).get(i).getValeurs(0), v);
+                    crt_vertex = v;
+                }
+                else{
+                    lambda[v.getid()] = 999999999999.0;
+                }
+            }
+        }
+        //
+        while( crt_vertex.getid() != sommetTerminal) {
+            //on recherche x appartenant à listeSommetNonTraité tel que lambda[x] soit le minimun de lambda et
+            do {
+                crt_vertex = Skiplist.findMin().getValue();
+                Skiplist.deleteMin();
+            }while (!listeSommetsNonTraité.contains(crt_vertex));
+            listeSommetsNonTraité.remove(crt_vertex);
+            //On mets potentiellement a jour la longueur de chaque sommet
+            for (int i = 0; i < listeAdjacence.get(crt_vertex.getid()).size(); i++) {
+                if ((lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0) )< lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()]) {
+                    lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()] = lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0);
+                    Skiplist.insert(lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0), listeSommets.get(listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()) );
+                }
+            }
         }
         System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
         return lambda;
     }
 
 
+
+
     // Methode de parcours en Largeur du graphique, à partir d'un sommet placé en
+
 
     public HashMap<Integer, int[]> parcoursLargeur(int sommetDepart){
         HashMap<Integer, int[]> tableau = new HashMap<Integer, int[]>();

@@ -10,6 +10,7 @@ public class main {
 
         //System.out.println(test.getListeSommets().get(3857).getNom());
         test.algoDjikstra(3857,379);
+        test.algoDjikstraSkipList(3857,379);
         //System.out.println(test.getListeSommets().get(0).affichage()+test.getListeAdjacence().get(0));
         
         //System.out.println(test.Besttrack(0));
