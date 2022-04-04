@@ -139,43 +139,6 @@ public class Graphe {
 
     // region Parcours
 
-    public void djikstra(int depart) {
-        // X sommet - U ensemble des arcs - n nb sommet - m nb nbArcs
-        ArrayList<Vertex> Z = new ArrayList<Vertex>();
-        double[] lambda = new double[this.listeSommets.size()-1];
-
-        for (int i = 0; i < this.listeSommets.size()-1;i++){
-            if(this.estfils(depart, i)){
-                int id_adjacence = 0;
-                List<Edge> chemin_possible = this.getListeAdjacence().get(depart);
-                for(int j = 0; j < chemin_possible.size();j++){
-                    if(this.getListeSommets().get(chemin_possible.get(j).getSommetTerminal()) ==
-                    this.getListeSommets().get(i)){
-                        id_adjacence = j;
-                    }
-                }
-                lambda[i] = this.getListeAdjacence().get(depart).get(id_adjacence).getValeurs(0);
-                System.out.println(lambda[i]);
-            }
-            else{
-            lambda[i] = 10000.0;
-            }
-            //System.out.println(lambda[i]);
-        }
-        for (Vertex v : this.listeSommets) {
-            if (v != this.listeSommets.get(depart)) {
-                Z.add(v);
-            }
-        }
-
-        while (Z.size() > 0) {
-
-        }
-
-        //System.out.println(Z);
-
-    }
-
     //j'ai déplacé mon code à la fin du programme, j'en refais un nouveau de 0
 
     //Version que j'essaie de faire de l'algo, flemme de reprendre la tienne je recommence de zero
