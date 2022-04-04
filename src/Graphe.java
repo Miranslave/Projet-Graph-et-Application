@@ -2,6 +2,7 @@ import java.lang.reflect.Array;
 import java .util.Collections;
 import java.util.*;
 import java.io.*;
+import java.lang.Math;
 
 
 
@@ -69,7 +70,7 @@ public class Graphe {
                         compt += 1;
                         String[] sommet = strng.split(" ");
                         // Ajout du sommet dans ListeSommets
-                        curt_graph.getListeSommets().add(new Vertex(sommet[1], sommet[2], sommet[3],i));
+                        curt_graph.getListeSommets().add(new Vertex(sommet[1], sommet[3], sommet[2],i));
                     }
                 }
 
@@ -458,6 +459,30 @@ public class Graphe {
     public int DoubletoInt(double v) {
         int IntValue = (int) Math.round(v);
         return IntValue;
+    }
+
+    public float DoubletoFloat(double v) {
+        float floatValue = (float) Math.round(v);
+        return floatValue;
+    }
+
+    public double d_gps(int a,int b){
+        Vertex v_1 = this.getListeSommets().get(a);
+        Vertex v_2 = this.getListeSommets().get(b);
+        double longitudev1 = Math.toRadians(v_1.getLongitude());
+        double longitudev2 = Math.toRadians(v_2.getLongitude());
+        double latitudev1 = Math.toRadians(v_1.getLatitude());
+        double latitudev2 = Math.toRadians(v_2.getLatitude());
+        int r_terre = 6378137;
+
+        System.out.println("v1 : "+ longitudev1+"|"+latitudev1);
+        System.out.println("v2 : "+ longitudev2+"|"+latitudev2);
+        double lambda = longitudev2 - longitudev1;
+        double temp = Math.sin(latitudev1)*Math.sin(latitudev2)+Math.cos(latitudev1)*Math.cos(latitudev2)*Math.cos(lambda);
+        System.out.println(temp);
+        double distance;
+        distance = Math.acos(temp)*r_terre*0.001;
+        return distance;
     }
 
     @Override
