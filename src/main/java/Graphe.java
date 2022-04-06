@@ -188,6 +188,59 @@ public class Graphe {
         return lambda;
     }
 
+    public double[] aEtoiles(int sommetDepart, int sommetTerminal){
+        ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
+        double[] lambda = new double[listeSommets.size()];
+        double[] estimation = new double[listeSommets.size()];
+        //Initialisation des valeurs du sommet de départ
+        int sommetarbitraire = 0;
+        listeSommetsNonTraité.remove(sommetDepart);
+        lambda[sommetDepart] = 0;
+        //initialisation
+        //On parcours chaque sommet non traité
+        Vertex crt_vertex = new Vertex("nom", "0.0", "0.0",0);
+        //Initialisation de lambda
+        for (Vertex v : listeSommetsNonTraité) {
+            //on parcour chaque sommet de la liste d'adjacence du sommet de départ
+            for(int i = 0; i < listeAdjacence.get(sommetDepart).size(); i++){
+                //si le sommet v est dans la liste d'adjacence on met à jour sa valeur
+                if(listeAdjacence.get(sommetDepart).get(i).getSommetTerminal() == v.getid()){
+                    lambda[v.getid()] = listeAdjacence.get(sommetDepart).get(i).getValeurs(0);
+                    estimation[v.getid()] = d_gps(listeAdjacence.get(sommetDepart).get(i).getSommetTerminal(), sommetTerminal) + lambda[v.getid()];
+                    crt_vertex = v;
+                }
+                else{
+                    lambda[v.getid()] = 999999999999.0;
+                    estimation[v.getid()] = 999999999999.0;
+                }
+            }
+        }
+        //
+        while( crt_vertex.getid() != sommetTerminal) {
+            //on recherche x appartenant à listeSommetNonTraité tel que lambda[x] soit le minimun de lambda et
+            crt_vertex = listeSommetsNonTraité.get(0);
+            for(Vertex v : listeSommetsNonTraité){
+                if(estimation[v.getid()] < estimation[crt_vertex.getid()]){
+                    crt_vertex = v;
+                }
+            }
+            listeSommetsNonTraité.remove(crt_vertex);
+            //On mets potentiellement a jour la longueur de chaque sommet
+            for (int i = 0; i < listeAdjacence.get(crt_vertex.getid()).size(); i++) {
+                if (( estimation[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0) + d_gps(crt_vertex.getid(), listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()) ) < estimation[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()]) {
+                    lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()] = lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0);
+                    estimation[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()] = lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()] + d_gps(listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal(), sommetTerminal);
+                }
+            }
+        }
+        if(listeSommetsNonTraité.size() == 0) {
+            System.out.println("Il n'existe pas de chemin entre les deux sommets");
+        }else {
+            System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
+        }
+        return lambda;
+    }
+
     public double[] algoDjikstraSkipList(int sommetDepart, int sommetTerminal){
         ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
         double[] lambda = new double[listeSommets.size()];
@@ -299,6 +352,28 @@ public class Graphe {
     }
     // endregion
 
+    //region fonction_annexe
+
+    public double d_gps(int a,int b){
+        //On utilise les indexs des deux sommets pour récupérer les sommets correspondant
+        Vertex v_1 = this.getListeSommets().get(a);
+        Vertex v_2 = this.getListeSommets().get(b);
+        double longitudev1 = Math.toRadians(v_1.getLongitude());
+        double longitudev2 = Math.toRadians(v_2.getLongitude());
+        double latitudev1 = Math.toRadians(v_1.getLatitude());
+        double latitudev2 = Math.toRadians(v_2.getLatitude());
+        int r_terre = 6378137;
+
+        //System.out.println("v1 : "+ longitudev1+"|"+latitudev1);
+        //System.out.println("v2 : "+ longitudev2+"|"+latitudev2);
+        double lambda = longitudev2 - longitudev1;
+        double temp = Math.sin(latitudev1)*Math.sin(latitudev2)+Math.cos(latitudev1)*Math.cos(latitudev2)*Math.cos(lambda);
+        //System.out.println(temp);
+        double distance;
+        distance = Math.acos(temp)*r_terre*0.001;
+        return distance;
+    }
+
     public void lecture_csv() {
         File doc = new File("./graphs/CommunesFrance.csv");
         try (BufferedReader obj = new BufferedReader(new FileReader(doc))) {
@@ -329,6 +404,9 @@ public class Graphe {
             e.printStackTrace();
         }
     }
+    //endregion
+
+
     // region Affichage
 
     // Affichage des caratériqtique du graph créer
@@ -473,24 +551,7 @@ public class Graphe {
         return floatValue;
     }
 
-    public double d_gps(int a,int b){
-        Vertex v_1 = this.getListeSommets().get(a);
-        Vertex v_2 = this.getListeSommets().get(b);
-        double longitudev1 = Math.toRadians(v_1.getLongitude());
-        double longitudev2 = Math.toRadians(v_2.getLongitude());
-        double latitudev1 = Math.toRadians(v_1.getLatitude());
-        double latitudev2 = Math.toRadians(v_2.getLatitude());
-        int r_terre = 6378137;
 
-        System.out.println("v1 : "+ longitudev1+"|"+latitudev1);
-        System.out.println("v2 : "+ longitudev2+"|"+latitudev2);
-        double lambda = longitudev2 - longitudev1;
-        double temp = Math.sin(latitudev1)*Math.sin(latitudev2)+Math.cos(latitudev1)*Math.cos(latitudev2)*Math.cos(lambda);
-        System.out.println(temp);
-        double distance;
-        distance = Math.acos(temp)*r_terre*0.001;
-        return distance;
-    }
 
     @Override
     // region toString
