@@ -1,7 +1,10 @@
+import org.jheaps.tree.FibonacciHeap;
+
 import java.lang.reflect.Array;
 import java .util.Collections;
 import java.util.*;
 import java.io.*;
+import java.lang.Math;
 
 
 
@@ -69,7 +72,7 @@ public class Graphe {
                         compt += 1;
                         String[] sommet = strng.split(" ");
                         // Ajout du sommet dans ListeSommets
-                        curt_graph.getListeSommets().add(new Vertex(sommet[1], sommet[2], sommet[3],i));
+                        curt_graph.getListeSommets().add(new Vertex(sommet[1], sommet[3], sommet[2],i));
                     }
                 }
 
@@ -137,55 +140,18 @@ public class Graphe {
 
     // region Parcours
 
-    public void djikstra(int depart) {
-        // X sommet - U ensemble des arcs - n nb sommet - m nb nbArcs
-        ArrayList<Vertex> Z = new ArrayList<Vertex>();
-        double[] lambda = new double[this.listeSommets.size()-1];
 
-        for (int i = 0; i < this.listeSommets.size()-1;i++){
-            if(this.estfils(depart, i)){
-                int id_adjacence = 0;
-                List<Edge> chemin_possible = this.getListeAdjacence().get(depart);
-                for(int j = 0; j < chemin_possible.size();j++){
-                    if(this.getListeSommets().get(chemin_possible.get(j).getSommetTerminal()) ==
-                    this.getListeSommets().get(i)){
-                        id_adjacence = j;
-                    }
-                }
-                lambda[i] = this.getListeAdjacence().get(depart).get(id_adjacence).getValeurs(0);
-                System.out.println(lambda[i]);
-            }
-            else{
-            lambda[i] = 10000.0;
-            }
-            //System.out.println(lambda[i]);
-        }
-        for (Vertex v : this.listeSommets) {
-            if (v != this.listeSommets.get(depart)) {
-                Z.add(v);
-            }
-        }
-
-        while (Z.size() > 0) {
-
-        }
-
-        //System.out.println(Z);
-
-    }
-
-    //j'ai déplacé mon code à la fin du programme, j'en refais un nouveau de 0
-
-    //Version que j'essaie de faire de l'algo, flemme de reprendre la tienne je recommence de zero
     public double[] algoDjikstra(int sommetDepart, int sommetTerminal){
         ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
         double[] lambda = new double[listeSommets.size()];
+        //Initialisation des valeurs du sommet de départ
         int sommetarbitraire = 0;
         listeSommetsNonTraité.remove(sommetDepart);
         lambda[sommetDepart] = 0;
         //initialisation
         //On parcours chaque sommet non traité
         Vertex crt_vertex = new Vertex("nom", "0.0", "0.0",0);
+        //Initialisation de lambda
         for (Vertex v : listeSommetsNonTraité) {
             //on parcour chaque sommet de la liste d'adjacence du sommet de départ
             for(int i = 0; i < listeAdjacence.get(sommetDepart).size(); i++){
@@ -199,10 +165,8 @@ public class Graphe {
                 }
             }
         }
-
-        int compteur = 0;
         //
-        while( crt_vertex.getid() != sommetTerminal) {
+        while( crt_vertex.getid() != sommetTerminal && listeSommetsNonTraité.size() > 0) {
             //on recherche x appartenant à listeSommetNonTraité tel que lambda[x] soit le minimun de lambda et
             crt_vertex = listeSommetsNonTraité.get(0);
             for(Vertex v : listeSommetsNonTraité){
@@ -217,14 +181,109 @@ public class Graphe {
                     lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()] = lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0);
                 }
             }
-            compteur += 1 ;
         }
-        System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
+        //System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
         return lambda;
     }
 
+    public double[] aEtoiles(int sommetDepart, int sommetTerminal){
+        ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
+        double[] lambda = new double[listeSommets.size()];
+        double[] estimation = new double[listeSommets.size()];
+        //Initialisation des valeurs du sommet de départ
+        int sommetarbitraire = 0;
+        listeSommetsNonTraité.remove(sommetDepart);
+        lambda[sommetDepart] = 0;
+        //initialisation
+        //On parcours chaque sommet non traité
+        Vertex crt_vertex = new Vertex("nom", "0.0", "0.0",0);
+        //Initialisation de lambda
+        for (Vertex v : listeSommetsNonTraité) {
+            //on parcour chaque sommet de la liste d'adjacence du sommet de départ
+            for(int i = 0; i < listeAdjacence.get(sommetDepart).size(); i++){
+                //si le sommet v est dans la liste d'adjacence on met à jour sa valeur
+                if(listeAdjacence.get(sommetDepart).get(i).getSommetTerminal() == v.getid()){
+                    lambda[v.getid()] = listeAdjacence.get(sommetDepart).get(i).getValeurs(0);
+                    estimation[v.getid()] = d_gps(listeAdjacence.get(sommetDepart).get(i).getSommetTerminal(), sommetTerminal) + lambda[v.getid()];
+                    crt_vertex = v;
+                }
+                else{
+                    lambda[v.getid()] = 999999999999.0;
+                    estimation[v.getid()] = 999999999999.0;
+                }
+            }
+        }
+        //
+        while( crt_vertex.getid() != sommetTerminal) {
+            //on recherche x appartenant à listeSommetNonTraité tel que lambda[x] soit le minimun de lambda et
+            crt_vertex = listeSommetsNonTraité.get(0);
+            for(Vertex v : listeSommetsNonTraité){
+                if(estimation[v.getid()] < estimation[crt_vertex.getid()]){
+                    crt_vertex = v;
+                }
+            }
+            listeSommetsNonTraité.remove(crt_vertex);
+            //On mets potentiellement a jour la longueur de chaque sommet
+            for (int i = 0; i < listeAdjacence.get(crt_vertex.getid()).size(); i++) {
+                if (( estimation[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0) + d_gps(crt_vertex.getid(), listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()) ) < estimation[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()]) {
+                    lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()] = lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0);
+                    estimation[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()] = lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()] + d_gps(listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal(), sommetTerminal);
+                }
+            }
+        }
+        if(listeSommetsNonTraité.size() == 0) {
+            System.out.println("Il n'existe pas de chemin entre les deux sommets");
+        }else {
+            System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
+        }
+        return lambda;
+    }
 
-    // Methode de parcours en Largeur du graphique, à partir d'un sommet placé en
+    public double[] algoDjikstraSkipList(int sommetDepart, int sommetTerminal){
+        ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
+        double[] lambda = new double[listeSommets.size()];
+        FibonacciHeap<Double, Vertex> Skiplist = new FibonacciHeap<>();
+        //Initialisation des valeurs du sommet de départ
+        int sommetarbitraire = 0;
+        listeSommetsNonTraité.remove(sommetDepart);
+        lambda[sommetDepart] = 0;
+        //initialisation
+        //On parcours chaque sommet non traité
+        Vertex crt_vertex = new Vertex("nom", "0.0", "0.0",0);
+        //Initialisation de lambda
+        for (Vertex v : listeSommetsNonTraité) {
+            //on parcour chaque sommet de la liste d'adjacence du sommet de départ
+            for(int i = 0; i < listeAdjacence.get(sommetDepart).size(); i++){
+                //si le sommet v est dans la liste d'adjacence on met à jour sa valeur
+                if(listeAdjacence.get(sommetDepart).get(i).getSommetTerminal() == v.getid()){
+                    lambda[v.getid()] = listeAdjacence.get(sommetDepart).get(i).getValeurs(0);
+                    Skiplist.insert(listeAdjacence.get(sommetDepart).get(i).getValeurs(0), v);
+                    crt_vertex = v;
+                }
+                else{
+                    lambda[v.getid()] = 999999999999.0;
+                }
+            }
+        }
+        //
+        while( crt_vertex.getid() != sommetTerminal) {
+            //on recherche x appartenant à listeSommetNonTraité tel que lambda[x] soit le minimun de lambda et
+            do {
+                crt_vertex = Skiplist.findMin().getValue();
+                Skiplist.deleteMin();
+            }while (!listeSommetsNonTraité.contains(crt_vertex) && Skiplist.size()>0 && listeSommetsNonTraité.size()>0);
+            listeSommetsNonTraité.remove(crt_vertex);
+            //On mets potentiellement a jour la longueur de chaque sommet
+            for (int i = 0; i < listeAdjacence.get(crt_vertex.getid()).size(); i++) {
+                if ((lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0) )< lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()]) {
+                    lambda[listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()] = lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0);
+                    Skiplist.insert(lambda[crt_vertex.getid()] + listeAdjacence.get(crt_vertex.getid()).get(i).getValeurs(0), listeSommets.get(listeAdjacence.get(crt_vertex.getid()).get(i).getSommetTerminal()) );
+                }
+            }
+        }
+        //System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
+        return lambda;
+    }
 
     public HashMap<Integer, int[]> parcoursLargeur(int sommetDepart){
         HashMap<Integer, int[]> tableau = new HashMap<Integer, int[]>();
@@ -291,6 +350,156 @@ public class Graphe {
     }
     // endregion
 
+    //region VRP Traitement
+
+    public ArrayList<Vertex> get200Kpop(){
+        ArrayList<Vertex> tableau = new ArrayList<Vertex>();
+        for(Vertex v : listeSommets){
+            if(v.getPop()>200000){
+                tableau.add(v);
+                System.out.println("Le sommet " + v.getid() + " a été ajouté");
+            }
+        }
+        return tableau;
+    }
+
+    public void vrpPosition(){
+        /*
+        Pour répondre au problème, nous allons appliquer l'algorithme djikstra sur chaque ville du fichier de 5000 villes. Nous allons noter la moyenne
+        des distances de ces villes aux villes de plus de 200k habitants. La ville avec la plus petite moyenne sera la ville choisie par le VRP.
+         */
+        ArrayList<Vertex> villeDispo = this.get200Kpop();
+        double[] moyenneDistances = new double[listeSommets.size()];
+
+        //On parcour chaque ville du fichier
+        for(Vertex crt_ville : listeSommets){
+            System.out.println("Tentative de traitement de la ville : " + crt_ville.getNom());
+
+            //tableau qui contient le resultat de chaque djikstra pour la ville étudiée
+            double[] moyenneLocale = new double[listeSommets.size()];
+
+            //On la compare à chaque ville de plus de 200k habitants
+            for(int i=0; i<villeDispo.size(); i++){
+                Vertex crt_ville_200k = villeDispo.get(i);
+                double[] res = this.algoDjikstra(crt_ville.getid(),crt_ville_200k.getid());
+                moyenneLocale[i] = res[i];
+            }
+
+            //Une fois le tableeau des moyennes locale rempli on va calculer la moyenne locale
+            double moyenne = 0.0;
+            for(int i=0; i<moyenneLocale.length; i++){
+                moyenne += moyenneLocale[i];
+                moyenne = moyenne / moyenneLocale.length;
+            }
+
+            //on note cette valeur dans le tableau moyenneDistances
+            moyenneDistances[crt_ville.getid()] = moyenne;
+            System.out.println("La ville  : " + crt_ville.getNom() + " a été traitée avec succès");
+        }
+
+        //Une fois toutes les villes visités on fait une recherche de minimun pour trouver la plus petite moyenne et on l'affiche
+        int plusPetiteVille = 0;
+        for(int i=1; i<moyenneDistances.length; i++){
+            if(moyenneDistances[plusPetiteVille] > moyenneDistances[i]){
+                plusPetiteVille = i;
+            }
+        }
+
+        //Une fois la ville trouvé on l'affiche
+        System.out.println("la plus petite ville est : " + listeSommets.get(plusPetiteVille).getNom() + "avec une moyenne de " + moyenneDistances[plusPetiteVille] + " km");
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //endregion
+
+    //region fonction_annexe
+
+    public double d_gps(int a,int b){
+        //On utilise les indexs des deux sommets pour récupérer les sommets correspondant
+        Vertex v_1 = this.getListeSommets().get(a);
+        Vertex v_2 = this.getListeSommets().get(b);
+        double longitudev1 = Math.toRadians(v_1.getLongitude());
+        double longitudev2 = Math.toRadians(v_2.getLongitude());
+        double latitudev1 = Math.toRadians(v_1.getLatitude());
+        double latitudev2 = Math.toRadians(v_2.getLatitude());
+        int r_terre = 6378137;
+
+        //System.out.println("v1 : "+ longitudev1+"|"+latitudev1);
+        //System.out.println("v2 : "+ longitudev2+"|"+latitudev2);
+        double lambda = longitudev2 - longitudev1;
+        double temp = Math.sin(latitudev1)*Math.sin(latitudev2)+Math.cos(latitudev1)*Math.cos(latitudev2)*Math.cos(lambda);
+        //System.out.println(temp);
+        double distance;
+        distance = Math.acos(temp)*r_terre*0.001;
+        return distance;
+    }
+
     public void lecture_csv() {
         File doc = new File("./graphs/CommunesFrance.csv");
         try (BufferedReader obj = new BufferedReader(new FileReader(doc))) {
@@ -306,7 +515,6 @@ public class Graphe {
                     // Si nous observons une une correspondance entre le sommet et le
                     if (listeSommets.get(i).getNom().equalsIgnoreCase(param_int[0])) {
                         listeSommets.get(i).setPop(pop_temp);
-                        System.out.println(listeSommets.get(i).affichage_pop());
                     }
                 }
 
@@ -321,6 +529,9 @@ public class Graphe {
             e.printStackTrace();
         }
     }
+    //endregion
+
+
     // region Affichage
 
     // Affichage des caratériqtique du graph créer
@@ -461,6 +672,13 @@ public class Graphe {
         return IntValue;
     }
 
+    public float DoubletoFloat(double v) {
+        float floatValue = (float) Math.round(v);
+        return floatValue;
+    }
+
+
+
     @Override
     // region toString
     // toString liste adjacence
@@ -469,57 +687,3 @@ public class Graphe {
     }
     // endregion
 }
-
-
-/*
-//Initialisation du programme
-            int[] sommettraite = new int[listeSommets.size()];
-
-
-            //tableau contenant les distances de chaque sommet a sommetDepart
-            double[] longueur = new double[this.listeSommets.size()];
-            for(int i = 0; i < longueur.length; i++){
-                //ne pouvant mettre la distance à l'infini, on met chaque distance à 999999999. Il ne peut y avoir une distance de 1Md de km entre deux villes en France
-                longueur[i] = 999999999.0;
-            }
-
-        longueur[sommetDepart] = 0.0;
-        int crt_edge = sommetDepart;
-        boolean arrive = false;
-        sommettraite[crt_edge] = 1;
-
-        //Parcours
-        while(!arrive){
-            //tableau contenant les fils du sommet étudié
-            int[] sommetvoisin = new int[listeAdjacence.get(crt_edge).size()];
-
-            //on parcour l'ensemble des sommet adjacent au sommet de départ
-            for(int i =0;  i < listeAdjacence.get(crt_edge).size(); i++){
-                //on ajoute chaque fils au tableau sommetvoisin
-                sommetvoisin[i] = listeAdjacence.get(crt_edge).get(i).getSommetTerminal();
-                //On compare la distance du fils qu'il a déjà à sa possible nouvelle longueur si on utilise le chemin avec le sommet pere
-                if(longueur[listeAdjacence.get(crt_edge).get(i).getSommetTerminal()] > longueur[crt_edge] + listeAdjacence.get(crt_edge).get(i).getValeurs(0)){
-                    longueur[listeAdjacence.get(crt_edge).get(i).getSommetTerminal()] = longueur[crt_edge] + listeAdjacence.get(crt_edge).get(i).getValeurs(0);
-                }
-            }
-            //boucle de recherche du plus petit arc des fils
-            int pluspetitsommet = sommetvoisin[0];
-            for(int i = 1; i< sommetvoisin.length; i++){
-                if(longueur[pluspetitsommet] > longueur[sommetvoisin[i]]){
-                    if(sommettraite[sommetvoisin[i]] == 0) {
-                        pluspetitsommet = sommetvoisin[i];
-                    }
-                }
-            }
-            System.out.println("Sommet traité : "+ crt_edge + "   , le prochain sommet étudié est :" +pluspetitsommet);
-
-            sommettraite[pluspetitsommet] = 1;
-            crt_edge = pluspetitsommet;
-            if(crt_edge == sommetTerminal){
-                arrive = true;
-            }
-
-        }
-        System.out.println("La distance est de :  " + longueur[sommetTerminal]);
-        return longueur;
- */
