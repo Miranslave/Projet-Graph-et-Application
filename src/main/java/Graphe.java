@@ -402,7 +402,7 @@ public class Graphe {
         //Une fois toutes les villes visités on fait une recherche de minimun pour trouver la plus petite moyenne et on l'affiche
         int plusPetiteVille = 0;
         for(int i=1; i<moyenneDistances.length; i++){
-            if(moyenneDistances[plusPetiteVille] > moyenneDistances[i]){
+            if(moyenneDistances[plusPetiteVille] > moyenneDistances[i] && moyenneDistances[i] != 0.0){
                 plusPetiteVille = i;
             }
         }
