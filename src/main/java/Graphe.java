@@ -140,9 +140,7 @@ public class Graphe {
 
     // region Parcours
 
-    //j'ai déplacé mon code à la fin du programme, j'en refais un nouveau de 0
 
-    //Version que j'essaie de faire de l'algo, flemme de reprendre la tienne je recommence de zero
     public double[] algoDjikstra(int sommetDepart, int sommetTerminal){
         ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
         double[] lambda = new double[listeSommets.size()];
@@ -168,7 +166,7 @@ public class Graphe {
             }
         }
         //
-        while( crt_vertex.getid() != sommetTerminal) {
+        while( crt_vertex.getid() != sommetTerminal && listeSommetsNonTraité.size() > 0) {
             //on recherche x appartenant à listeSommetNonTraité tel que lambda[x] soit le minimun de lambda et
             crt_vertex = listeSommetsNonTraité.get(0);
             for(Vertex v : listeSommetsNonTraité){
@@ -184,7 +182,7 @@ public class Graphe {
                 }
             }
         }
-        System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
+        //System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
         return lambda;
     }
 
@@ -273,7 +271,7 @@ public class Graphe {
             do {
                 crt_vertex = Skiplist.findMin().getValue();
                 Skiplist.deleteMin();
-            }while (!listeSommetsNonTraité.contains(crt_vertex));
+            }while (!listeSommetsNonTraité.contains(crt_vertex) && Skiplist.size()>0 && listeSommetsNonTraité.size()>0);
             listeSommetsNonTraité.remove(crt_vertex);
             //On mets potentiellement a jour la longueur de chaque sommet
             for (int i = 0; i < listeAdjacence.get(crt_vertex.getid()).size(); i++) {
@@ -283,7 +281,7 @@ public class Graphe {
                 }
             }
         }
-        System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
+        //System.out.println("La distance entre les deux sommets est :  " + lambda[sommetTerminal] + "km");
         return lambda;
     }
 
@@ -352,6 +350,134 @@ public class Graphe {
     }
     // endregion
 
+    //region VRP Traitement
+
+    public ArrayList<Vertex> get200Kpop(){
+        ArrayList<Vertex> tableau = new ArrayList<Vertex>();
+        for(Vertex v : listeSommets){
+            if(v.getPop()>200000){
+                tableau.add(v);
+                System.out.println("Le sommet " + v.getid() + " a été ajouté");
+            }
+        }
+        return tableau;
+    }
+
+    public void vrpPosition(){
+        /*
+        Pour répondre au problème, nous allons appliquer l'algorithme djikstra sur chaque ville du fichier de 5000 villes. Nous allons noter la moyenne
+        des distances de ces villes aux villes de plus de 200k habitants. La ville avec la plus petite moyenne sera la ville choisie par le VRP.
+         */
+        ArrayList<Vertex> villeDispo = this.get200Kpop();
+        double[] moyenneDistances = new double[listeSommets.size()];
+
+        //On parcour chaque ville du fichier
+        for(Vertex crt_ville : listeSommets){
+            System.out.println("Tentative de traitement de la ville : " + crt_ville.getNom());
+
+            //tableau qui contient le resultat de chaque djikstra pour la ville étudiée
+            double[] moyenneLocale = new double[listeSommets.size()];
+
+            //On la compare à chaque ville de plus de 200k habitants
+            for(int i=0; i<villeDispo.size(); i++){
+                Vertex crt_ville_200k = villeDispo.get(i);
+                double[] res = this.algoDjikstra(crt_ville.getid(),crt_ville_200k.getid());
+                moyenneLocale[i] = res[i];
+            }
+
+            //Une fois le tableeau des moyennes locale rempli on va calculer la moyenne locale
+            double moyenne = 0.0;
+            for(int i=0; i<moyenneLocale.length; i++){
+                moyenne += moyenneLocale[i];
+                moyenne = moyenne / moyenneLocale.length;
+            }
+
+            //on note cette valeur dans le tableau moyenneDistances
+            moyenneDistances[crt_ville.getid()] = moyenne;
+            System.out.println("La ville  : " + crt_ville.getNom() + " a été traitée avec succès");
+        }
+
+        //Une fois toutes les villes visités on fait une recherche de minimun pour trouver la plus petite moyenne et on l'affiche
+        int plusPetiteVille = 0;
+        for(int i=1; i<moyenneDistances.length; i++){
+            if(moyenneDistances[plusPetiteVille] > moyenneDistances[i]){
+                plusPetiteVille = i;
+            }
+        }
+
+        //Une fois la ville trouvé on l'affiche
+        System.out.println("la plus petite ville est : " + listeSommets.get(plusPetiteVille).getNom() + "avec une moyenne de " + moyenneDistances[plusPetiteVille] + " km");
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //endregion
+
     //region fonction_annexe
 
     public double d_gps(int a,int b){
@@ -389,7 +515,6 @@ public class Graphe {
                     // Si nous observons une une correspondance entre le sommet et le
                     if (listeSommets.get(i).getNom().equalsIgnoreCase(param_int[0])) {
                         listeSommets.get(i).setPop(pop_temp);
-                        System.out.println(listeSommets.get(i).affichage_pop());
                     }
                 }
 
