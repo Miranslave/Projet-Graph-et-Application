@@ -140,12 +140,10 @@ public class Graphe {
 
     // region Parcours
 
-
     public double[] algoDjikstra(int sommetDepart, int sommetTerminal){
         ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
         double[] lambda = new double[listeSommets.size()];
         //Initialisation des valeurs du sommet de départ
-        int sommetarbitraire = 0;
         listeSommetsNonTraité.remove(sommetDepart);
         lambda[sommetDepart] = 0;
         //initialisation
