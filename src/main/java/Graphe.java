@@ -374,31 +374,33 @@ public class Graphe {
             System.out.println("Tentative de traitement de la ville : " + crt_ville.getNom());
 
             //tableau qui contient le resultat de chaque djikstra pour la ville étudiée
-            double[] moyenneLocale = new double[listeSommets.size()];
+            double[] moyenneLocale = new double[villeDispo.size()];
 
             //On la compare à chaque ville de plus de 200k habitants
             for(int i=0; i<villeDispo.size(); i++){
                 Vertex crt_ville_200k = villeDispo.get(i);
                 double[] res = this.algoDjikstra(crt_ville.getid(),crt_ville_200k.getid());
-                moyenneLocale[i] = res[i];
+                moyenneLocale[i] = res[villeDispo.get(i).getid()];
+
             }
 
             //Une fois le tableeau des moyennes locale rempli on va calculer la moyenne locale
             double moyenne = 0.0;
-            for(int i=0; i<moyenneLocale.length; i++){
+            for(int i=0; i<villeDispo.size(); i++){
                 moyenne += moyenneLocale[i];
-                moyenne = moyenne / moyenneLocale.length;
             }
+            moyenne = moyenne / villeDispo.size();
+
 
             //on note cette valeur dans le tableau moyenneDistances
             moyenneDistances[crt_ville.getid()] = moyenne;
-            System.out.println("La ville  : " + crt_ville.getNom() + " a été traitée avec succès");
+
         }
 
         //Une fois toutes les villes visités on fait une recherche de minimun pour trouver la plus petite moyenne et on l'affiche
         int plusPetiteVille = 0;
         for(int i=1; i<moyenneDistances.length; i++){
-            if(moyenneDistances[plusPetiteVille] > moyenneDistances[i]){
+            if(moyenneDistances[plusPetiteVille] > moyenneDistances[i] && moyenneDistances[i] != 0.0){
                 plusPetiteVille = i;
             }
         }
