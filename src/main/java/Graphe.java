@@ -137,13 +137,11 @@ public class Graphe {
 
     // region Parcours
 
-
     public double[] algoDjikstra(int sommetDepart, int sommetTerminal){
         ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
         ArrayList<Vertex> chemin = new ArrayList<>();
         double[] lambda = new double[listeSommets.size()];
         //Initialisation des valeurs du sommet de départ
-        int sommetarbitraire = 0;
         listeSommetsNonTraité.remove(sommetDepart);
         lambda[sommetDepart] = 0;
         //initialisation
@@ -650,6 +648,8 @@ public class Graphe {
     }
     // endregion
 
+    
+    
     public Vertex Besttrack(int id_vertex) {
         double best = 10000;
         Vertex res = null;
@@ -666,7 +666,6 @@ public class Graphe {
 
         return res;
     }
-
     public boolean estfils(int id_vertex_pere, int id_vertex_tmp) {
         boolean res = false;
         List<Edge> chemin_possible = this.getListeAdjacence().get(id_vertex_pere);
