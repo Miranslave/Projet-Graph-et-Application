@@ -10,8 +10,11 @@ public class main {
         test.lecture_csv();
         //test.vrpPosition();
         //System.out.println(test.getListeSommets().get(3857).getNom());
-        test.algoDjikstra(3857,379);
-        //test.jenpeuxplusdedijkstra(3857,379);
+        //test.algoDjikstra(1500,379);
+        long time = System.currentTimeMillis();
+        //test.DjikstrafaresFibototal(3857);
+        test.vrpPosition();
+        System.out.println("temps : " +(System.currentTimeMillis() - time));
         //test.aEtoiles(3857, 379);
         //System.out.println(test.getListeSommets().get(0).affichage()+test.getListeAdjacence().get(0));
         

@@ -246,7 +246,157 @@ public class Graphe {
         }
         return lambda;
     }
+//  Debut Fares
+    public HashMap<Vertex, Double> Djikstrafares(int Depart, int Fin){
 
+        //Données
+        Vertex ville_depart = this.getListeSommets().get(Depart);
+        Vertex ville_arriver = this.getListeSommets().get(Fin);
+        int taille = listeSommets.size();
+        ArrayList<Vertex> sommetvisite = new ArrayList<Vertex>();
+        HashMap<Vertex, Double> lambda = new HashMap<Vertex, Double>();
+        
+        //initialisation
+        for(int i = 0; i < taille;i++){
+            lambda.put(listeSommets.get(i),Double.POSITIVE_INFINITY);
+        }
+        lambda.put(listeSommets.get(Depart),0.0);
+        sommetvisite.add(ville_depart);
+
+        // Les villes autours de la ville de départ
+        for(Edge arrete : listeAdjacence.get(Depart)){
+            lambda.put(listeSommets.get(arrete.getSommetTerminal()),arrete.getValeurs(0));
+        }
+
+        while(!sommetvisite.contains(ville_arriver)){
+            double min = Double.MAX_VALUE;
+            Vertex ville_min = null;
+            // Boucle pour chercher la plus petite valeur  
+            for(int i = 0; i < taille; i++){
+                if(lambda.get(listeSommets.get(i)) < min && !sommetvisite.contains(listeSommets.get(i)) ){
+                    ville_min = listeSommets.get(i); 
+                    min = lambda.get(listeSommets.get(i));
+                }
+            }
+            
+            sommetvisite.add(ville_min);
+
+            // MEttre a jour tous les sommets autours du plus petit sommet
+            for(Edge arrete : listeAdjacence.get(ville_min.getid())){
+                
+                if(!sommetvisite.contains(listeSommets.get(arrete.getSommetTerminal()))){
+                    if(lambda.get(ville_min) + arrete.getValeurs(0) < lambda.get(listeSommets.get(arrete.getSommetTerminal()))){
+                        lambda.put(listeSommets.get(arrete.getSommetTerminal()),lambda.get(ville_min) + arrete.getValeurs(0));
+                    }
+                }
+            }
+
+        }
+        System.out.println(lambda.get(ville_arriver));
+        return lambda;
+    }
+
+    public HashMap<Vertex, Double> DjikstrafaresFibo(int Depart, int Fin){
+
+        //Données
+        Vertex ville_depart = this.getListeSommets().get(Depart);
+        Vertex ville_arriver = this.getListeSommets().get(Fin);
+        int taille = listeSommets.size();
+        ArrayList<Vertex> sommetvisite = new ArrayList<Vertex>();
+        HashMap<Vertex, Double> lambda = new HashMap<Vertex, Double>();
+        FibonacciHeap<Double, Vertex> fibolist = new FibonacciHeap<>();
+        
+        //initialisation
+        for(int i = 0; i < taille;i++){
+            lambda.put(listeSommets.get(i),Double.POSITIVE_INFINITY);
+        }
+        lambda.put(listeSommets.get(Depart),0.0);
+        sommetvisite.add(ville_depart);
+
+        // Les villes autours de la ville de départ
+        for(Edge arrete : listeAdjacence.get(Depart)){
+            lambda.put(listeSommets.get(arrete.getSommetTerminal()),arrete.getValeurs(0));
+            fibolist.insert(arrete.getValeurs(0),listeSommets.get(arrete.getSommetTerminal()));
+        }
+
+        while(!sommetvisite.contains(ville_arriver)){
+            Vertex ville_min = null;
+            // Boucle pour chercher la plus petite valeur  
+            do{
+                if(fibolist.isEmpty()){
+                    return lambda;
+                }
+                ville_min = fibolist.deleteMin().getValue();
+            }while(sommetvisite.contains(ville_min));
+            
+            sommetvisite.add(ville_min);
+
+            // MEttre a jour tous les sommets autours du plus petit sommet
+            for(Edge arrete : listeAdjacence.get(ville_min.getid())){
+                
+                if(!sommetvisite.contains(listeSommets.get(arrete.getSommetTerminal()))){
+                    if(lambda.get(ville_min) + arrete.getValeurs(0) < lambda.get(listeSommets.get(arrete.getSommetTerminal()))){
+                        lambda.put(listeSommets.get(arrete.getSommetTerminal()),lambda.get(ville_min) + arrete.getValeurs(0));
+                        fibolist.insert(lambda.get(ville_min) + arrete.getValeurs(0),listeSommets.get(arrete.getSommetTerminal()));
+                    }
+                }
+            }
+
+        }
+        System.out.println(lambda.get(ville_arriver));
+        return lambda;
+    }
+
+    public HashMap<Vertex, Double> DjikstrafaresFibototal(int Depart){
+
+        //Données
+        Vertex ville_depart = this.getListeSommets().get(Depart);
+        int taille = listeSommets.size();
+        ArrayList<Vertex> sommetvisite = new ArrayList<Vertex>();
+        HashMap<Vertex, Double> lambda = new HashMap<Vertex, Double>();
+        FibonacciHeap<Double, Vertex> fibolist = new FibonacciHeap<>();
+        
+        //initialisation
+        for(int i = 0; i < taille;i++){
+            lambda.put(listeSommets.get(i),Double.POSITIVE_INFINITY);
+        }
+        lambda.put(listeSommets.get(Depart),0.0);
+        sommetvisite.add(ville_depart);
+
+        // Les villes autours de la ville de départ
+        for(Edge arrete : listeAdjacence.get(Depart)){
+            lambda.put(listeSommets.get(arrete.getSommetTerminal()),arrete.getValeurs(0));
+            fibolist.insert(arrete.getValeurs(0),listeSommets.get(arrete.getSommetTerminal()));
+        }
+
+        while(sommetvisite.size() < taille){
+            Vertex ville_min = null;
+            // Boucle pour chercher la plus petite valeur  
+            do{
+                if(fibolist.isEmpty()){
+                    return lambda;
+                }
+                ville_min = fibolist.deleteMin().getValue();
+            }while(sommetvisite.contains(ville_min));
+            
+            sommetvisite.add(ville_min);
+
+            // MEttre a jour tous les sommets autours du plus petit sommet
+            for(Edge arrete : listeAdjacence.get(ville_min.getid())){
+                
+                if(!sommetvisite.contains(listeSommets.get(arrete.getSommetTerminal()))){
+                    if(lambda.get(ville_min) + arrete.getValeurs(0) < lambda.get(listeSommets.get(arrete.getSommetTerminal()))){
+                        lambda.put(listeSommets.get(arrete.getSommetTerminal()),lambda.get(ville_min) + arrete.getValeurs(0));
+                        fibolist.insert(lambda.get(ville_min) + arrete.getValeurs(0),listeSommets.get(arrete.getSommetTerminal()));
+                    }
+                }
+            }
+
+        }
+        return lambda;
+    }
+
+    // Fin Fares
     public double[] algoDjikstraSkipList(int sommetDepart, int sommetTerminal){
         ArrayList<Vertex> listeSommetsNonTraité = new ArrayList<>(listeSommets);
         double[] lambda = new double[listeSommets.size()];
@@ -387,13 +537,10 @@ public class Graphe {
 
             //tableau qui contient le resultat de chaque djikstra pour la ville étudiée
             double[] moyenneLocale = new double[villeDispo.size()];
-
+            HashMap<Vertex,Double> res = this.DjikstrafaresFibototal(crt_ville.getid());
             //On la compare à chaque ville de plus de 200k habitants
-            for(int i=0; i<villeDispo.size(); i++){
-                Vertex crt_ville_200k = villeDispo.get(i);
-                double[] res = this.algoDjikstraSkipList(crt_ville.getid(),crt_ville_200k.getid());
-                moyenneLocale[i] = res[villeDispo.get(i).getid()];
-
+            for(int i=0; i<villeDispo.size(); i++){ 
+                moyenneLocale[i] = res.get(villeDispo.get(i));
             }
 
             //Une fois le tableeau des moyennes locale rempli on va calculer la moyenne locale
@@ -421,69 +568,6 @@ public class Graphe {
         System.out.println("la plus petite ville est : " + listeSommets.get(plusPetiteVille).getNom() + "avec une moyenne de " + moyenneDistances[plusPetiteVille] + " km");
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

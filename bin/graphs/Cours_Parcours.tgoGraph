@@ -1,0 +1,30 @@
+Name: Cours_Parcours.tgoGraph
+Oriented: true
+Parameters [nbVertices nbValuesByVertex nbEdges nbValuesByEdge]:
+9 0 15 0
+Vertices [id name values[]]:
+0 a
+1 b
+2 c
+3 d
+4 e
+5 f
+6 g
+7 h
+8 i
+Edges [idInitialVertex idFinalVertex values[]]:
+0 5
+0 8
+2 0
+3 1
+3 5
+3 7
+4 1
+4 2
+5 7
+6 1
+6 4
+7 2
+7 4
+8 2
+8 6
