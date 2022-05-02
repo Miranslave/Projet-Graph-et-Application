@@ -14,6 +14,10 @@ public class Vertex {
         this.pop = 0;
         this.id = id;
     }
+    public Vertex(String nom,int id) {
+        this.nom = nom;
+        this.id = id;
+    }
 
     // region Get/Set
     public String getNom() {
