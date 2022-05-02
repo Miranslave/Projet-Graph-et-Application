@@ -4,30 +4,27 @@ public class main {
     public static void main(String[] args) throws IOException {
         
         Graphe test = Graphe.ImporterGraphe("CommunesFrance_5000coord");
-
-        //System.out.println(test.estfils(3652, 0));
-
         test.lecture_csv();
-        //test.vrpPosition();
-        //System.out.println(test.getListeSommets().get(3857).getNom());
-        //test.algoDjikstra(1500,379);
-        long time = System.currentTimeMillis();
+        
+        
+        //System.out.println(test.d_gps(3857, 379));
+        //test.Djikstrafares(3857,379);
+        //test.Astarfares(3857, 379);
+        //test.DjikstrafaresFibo(3857,379);
         //test.DjikstrafaresFibototal(3857);
-        test.vrpPosition();
-        System.out.println("temps : " +(System.currentTimeMillis() - time));
-        //test.aEtoiles(3857, 379);
-        //System.out.println(test.getListeSommets().get(0).affichage()+test.getListeAdjacence().get(0));
-        
-        //System.out.println(test.Besttrack(0));
-        
-        //test.lecture_csv();
-
-
-        /* pour tester le graph 
-        for (int i = 0; i < test.getListeAdjacence().get(0).size() ; i++) {
-        System.out.println(0+" "+test.getListeAdjacence().get(0).get(i).affichage());
-        }
-        System.out.println(test.toString());
-        */
+        //test.vrpPosition();
+        long time0 = System.currentTimeMillis();
+        test.Djikstrafares(3857,379);
+        System.out.println("temps : " +(System.currentTimeMillis() - time0));
+        long time1 = System.currentTimeMillis();
+        test.Astarfares(3857, 379);
+        System.out.println("temps : " +(System.currentTimeMillis() - time1));
+        long time2 = System.currentTimeMillis();
+        test.DjikstrafaresFibo(3857,379);
+        System.out.println("temps : " +(System.currentTimeMillis() - time2));
+        long time3 = System.currentTimeMillis();
+        System.out.println("temps : " +(System.currentTimeMillis() - time3));
+        long time4 = System.currentTimeMillis();
+        System.out.println("temps : " +(System.currentTimeMillis() - time4));
     }
 }
