@@ -5,6 +5,9 @@ import java .util.Collections;
 import java.util.*;
 import java.io.*;
 import java.lang.Math;
+
+import static java.lang.Double.MAX_VALUE;
+
 public class Graphe {
     private boolean oriente;
     private int nbSommet;
@@ -162,7 +165,7 @@ public class Graphe {
         }
 
         while(!sommetvisite.contains(ville_arriver)){
-            double min = Double.MAX_VALUE;
+            double min = MAX_VALUE;
             Vertex ville_min = null;
             // Boucle pour chercher la plus petite valeur  
             for(int i = 0; i < taille; i++){
@@ -216,7 +219,7 @@ public class Graphe {
         }
 
         while(!sommetvisite.contains(ville_arriver)){
-            double min = Double.MAX_VALUE;
+            double min = MAX_VALUE;
             Vertex ville_min = null;
             // Boucle pour chercher la plus petite valeur  
             for(int i = 0; i < taille; i++){
@@ -290,7 +293,7 @@ public class Graphe {
             }
 
         }
-        System.out.println(lambda.get(ville_arriver));
+        //System.out.println(lambda.get(ville_arriver));
         return lambda;
     }
 
@@ -438,9 +441,11 @@ public class Graphe {
 
             //tableau qui contient le resultat de chaque djikstra pour la ville étudiée
             double[] moyenneLocale = new double[villeDispo.size()];
-            HashMap<Vertex,Double> res = this.DjikstrafaresFibototal(crt_ville.getid());
+
             //On la compare à chaque ville de plus de 200k habitants
-            for(int i=0; i<villeDispo.size(); i++){ 
+            for(int i=0; i<villeDispo.size(); i++){
+                Vertex crt_ville_200k = villeDispo.get(i);
+                HashMap<Vertex,Double> res = this.DjikstrafaresFibo(crt_ville.getid(),crt_ville_200k.getid());
                 moyenneLocale[i] = res.get(villeDispo.get(i));
             }
 
@@ -518,6 +523,78 @@ public class Graphe {
         //Une fois la ville trouvé on l'affiche
         System.out.println("la plus petite ville est : " + listeSommets.get(plusPetiteVille).getNom() + "avec une moyenne de " + moyenneDistances[plusPetiteVille] + " km");
 
+    }
+
+    public ArrayList<Vertex> vrpRoute(int tailleVilleMin){
+        ArrayList<Vertex> route = new ArrayList<Vertex>();
+        ArrayList<Vertex> villeDispo = new ArrayList<Vertex>();
+        HashMap<Vertex,HashMap<Vertex,Double>> listecombi = new HashMap<Vertex, HashMap<Vertex, Double>>();
+        double poids = MAX_VALUE;
+        //Recherche des villes correspondants aux critères
+        for(Vertex v : listeSommets){
+            if(v.getPop()>tailleVilleMin){
+                villeDispo.add(v);
+            }
+        }
+        //Cas où nous ne troouvons pas de ville correspondant aux critères
+        if(villeDispo.size()==0){
+            System.out.println("Erreur aucune ville ne correspond aux critères");
+            return null;
+        }
+
+        //Initialisation du sous graphe
+        for(Vertex crtBigVille : villeDispo){
+            HashMap<Vertex, Double> adja = new HashMap<Vertex, Double>();
+            for(Vertex extremité : villeDispo){
+                if(crtBigVille != extremité){
+                    adja.put(extremité, DjikstrafaresFibo(crtBigVille.getid(), extremité.getid()).get(extremité));
+                }
+            }
+            listecombi.put(crtBigVille, adja);
+
+
+        }
+        //On test pour chaque sommet un chemin hamiltonien
+        for(Vertex crtBigVille : villeDispo){
+            ArrayList<Vertex> routeBis = new ArrayList<Vertex>();
+            ArrayList<Vertex> villeRestante = new ArrayList<Vertex>(villeDispo);
+            villeRestante.remove(crtBigVille);
+            double poidsBis = 0;
+            Vertex crt_ville = crtBigVille;
+
+            while (!villeRestante.isEmpty()){
+                routeBis.add(crt_ville);
+                double pluspetitedistance = MAX_VALUE;
+                Vertex pluspetiteville = crt_ville;
+
+                for(Vertex fils : listecombi.get(crt_ville).keySet().toArray(new Vertex[0])){
+                    if(villeRestante.contains(fils)) {
+                        if (DjikstrafaresFibo(crt_ville.getid(), fils.getid()).get(fils) < pluspetitedistance) {
+                            pluspetitedistance = DjikstrafaresFibo(crt_ville.getid(), fils.getid()).get(fils);
+                            pluspetiteville = fils;
+                        }
+                    }
+                }
+                poidsBis += pluspetitedistance;
+                crt_ville = pluspetiteville;
+                villeRestante.remove(crt_ville);
+
+            }
+            poidsBis += DjikstrafaresFibo(crt_ville.getid(), crtBigVille.getid()).get(crtBigVille);
+            routeBis.add(crtBigVille);
+
+            if(poidsBis < poids){
+                route = routeBis;
+                poids = poidsBis;
+            }
+
+        }
+
+        for(int i = 0; i < route.size(); i++){
+            System.out.println("Nous passons par la ville : " + route.get(i).getNom() );
+        }
+        System.out.println("Le poids de ce circuit est de " + poids + " km.");
+        return route;
     }
 
     //endregion

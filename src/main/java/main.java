@@ -13,10 +13,12 @@ public class main {
         //test.DjikstrafaresFibo(3857,379);
         //test.DjikstrafaresFibototal(3857);
         //test.vrpPosition();
+
+
         long time0 = System.currentTimeMillis();
-        test.SlowvrpPosition();
+        test.vrpRoute(100000);
         System.out.println("temps : " +(System.currentTimeMillis() - time0));
-        long time1 = System.currentTimeMillis();
+        /*long time1 = System.currentTimeMillis();
         test.Astarfares(3857, 379);
         System.out.println("temps : " +(System.currentTimeMillis() - time1));
         long time2 = System.currentTimeMillis();
@@ -25,6 +27,6 @@ public class main {
         long time3 = System.currentTimeMillis();
         System.out.println("temps : " +(System.currentTimeMillis() - time3));
         long time4 = System.currentTimeMillis();
-        System.out.println("temps : " +(System.currentTimeMillis() - time4));
+        System.out.println("temps : " +(System.currentTimeMillis() - time4));*/
     }
 }
