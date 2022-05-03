@@ -486,11 +486,12 @@ public class Graphe {
 
             //tableau qui contient le resultat de chaque djikstra pour la ville étudiée
             double[] moyenneLocale = new double[villeDispo.size()];
-            HashMap<Vertex,Double> res = this.DjikstrafaresFibototal(crt_ville.getid());
+            
             //On la compare à chaque ville de plus de 200k habitants
             for(int i=0; i<villeDispo.size(); i++){ 
+                Vertex v = villeDispo.get(i);
+                HashMap<Vertex,Double> res = this.DjikstrafaresFibo(crt_ville.getid(),v.getid());
                 moyenneLocale[i] = res.get(villeDispo.get(i));
-                res = this.DjikstrafaresFibototal(crt_ville.getid());
             }
 
             //Une fois le tableeau des moyennes locale rempli on va calculer la moyenne locale

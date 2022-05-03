@@ -14,7 +14,7 @@ public class main {
         //test.DjikstrafaresFibototal(3857);
         //test.vrpPosition();
         long time0 = System.currentTimeMillis();
-        test.Djikstrafares(3857,379);
+        test.SlowvrpPosition();
         System.out.println("temps : " +(System.currentTimeMillis() - time0));
         long time1 = System.currentTimeMillis();
         test.Astarfares(3857, 379);
