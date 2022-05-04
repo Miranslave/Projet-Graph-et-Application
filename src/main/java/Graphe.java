@@ -421,7 +421,7 @@ public class Graphe {
         for(Vertex v : listeSommets){
             if(v.getPop()>x){
                 tableau.add(v);
-                System.out.println("Le sommet " + v.getid() + " a été ajouté");
+                System.out.println("Le sommet " + v.getNom()+ " a été ajouté");
             }
         }
         return tableau;
@@ -557,9 +557,9 @@ public class Graphe {
             villeRestante.remove(crtBigVille);
             double poidsBis = 0;
             Vertex crt_ville = crtBigVille;
-
+            routeBis.add(crt_ville);
             while (!villeRestante.isEmpty()){
-                routeBis.add(crt_ville);
+
                 double pluspetitedistance = MAX_VALUE;
                 Vertex pluspetiteville = crt_ville;
 
@@ -568,11 +568,13 @@ public class Graphe {
                         if (DjikstrafaresFibo(crt_ville.getid(), fils.getid()).get(fils) < pluspetitedistance) {
                             pluspetitedistance = DjikstrafaresFibo(crt_ville.getid(), fils.getid()).get(fils);
                             pluspetiteville = fils;
+
                         }
                     }
                 }
                 poidsBis += pluspetitedistance;
                 crt_ville = pluspetiteville;
+                routeBis.add(crt_ville);
                 villeRestante.remove(crt_ville);
 
             }
@@ -585,11 +587,18 @@ public class Graphe {
             }
 
         }
-
+        System.out.println("Affichage de la route : \n");
         for(int i = 0; i < route.size(); i++){
-            System.out.println("Nous passons par la ville : " + route.get(i).getNom() );
+            System.out.print(route.get(i).getNom());
+
+            if(i != route.size() - 1){
+                System.out.print(" -> ");
+            }
+            if((i % 4 )==0 && i != 0){
+                System.out.print("\n");
+            }
         }
-        System.out.println("Le poids de ce circuit est de " + poids + " km.");
+        System.out.println("\n\nLe poids de ce circuit est de " + poids + " km.");
         return route;
     }
 

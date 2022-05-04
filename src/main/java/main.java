@@ -17,7 +17,7 @@ public class main {
 
         long time0 = System.currentTimeMillis();
         test.vrpRoute(100000);
-        System.out.println("temps : " +(System.currentTimeMillis() - time0));
+        System.out.println("temps d'execution (en ms) : " +(System.currentTimeMillis() - time0));
         /*long time1 = System.currentTimeMillis();
         test.Astarfares(3857, 379);
         System.out.println("temps : " +(System.currentTimeMillis() - time1));
