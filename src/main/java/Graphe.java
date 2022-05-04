@@ -1,7 +1,5 @@
 import org.jheaps.tree.FibonacciHeap;
 
-import java.lang.reflect.Array;
-import java .util.Collections;
 import java.util.*;
 import java.io.*;
 import java.lang.Math;
@@ -416,10 +414,12 @@ public class Graphe {
 
     //region VRP Traitement
 
-    public ArrayList<Vertex> get200Kpop(){
+
+    //Fonction prenant en paramètre une taille de population et renvoie les villes ayant une population supérieur à l'entrée
+    public ArrayList<Vertex> getPop(int x){
         ArrayList<Vertex> tableau = new ArrayList<Vertex>();
         for(Vertex v : listeSommets){
-            if(v.getPop()>200000){
+            if(v.getPop()>x){
                 tableau.add(v);
                 System.out.println("Le sommet " + v.getid() + " a été ajouté");
             }
@@ -432,7 +432,7 @@ public class Graphe {
         Pour répondre au problème, nous allons appliquer l'algorithme djikstra sur chaque ville du fichier de 5000 villes. Nous allons noter la moyenne
         des distances de ces villes aux villes de plus de 200k habitants. La ville avec la plus petite moyenne sera la ville choisie par le VRP.
          */
-        ArrayList<Vertex> villeDispo = this.get200Kpop();
+        ArrayList<Vertex> villeDispo = this.getPop(200000);
         double[] moyenneDistances = new double[listeSommets.size()];
 
         //On parcour chaque ville du fichier
@@ -482,7 +482,7 @@ public class Graphe {
         Pour répondre au problème, nous allons appliquer l'algorithme djikstra sur chaque ville du fichier de 5000 villes. Nous allons noter la moyenne
         des distances de ces villes aux villes de plus de 200k habitants. La ville avec la plus petite moyenne sera la ville choisie par le VRP.
          */
-        ArrayList<Vertex> villeDispo = this.get200Kpop();
+        ArrayList<Vertex> villeDispo = this.getPop(200000);
         double[] moyenneDistances = new double[listeSommets.size()];
 
         //On parcour chaque ville du fichier
@@ -531,11 +531,7 @@ public class Graphe {
         HashMap<Vertex,HashMap<Vertex,Double>> listecombi = new HashMap<Vertex, HashMap<Vertex, Double>>();
         double poids = MAX_VALUE;
         //Recherche des villes correspondants aux critères
-        for(Vertex v : listeSommets){
-            if(v.getPop()>tailleVilleMin){
-                villeDispo.add(v);
-            }
-        }
+        villeDispo = getPop(tailleVilleMin);
         //Cas où nous ne troouvons pas de ville correspondant aux critères
         if(villeDispo.size()==0){
             System.out.println("Erreur aucune ville ne correspond aux critères");
